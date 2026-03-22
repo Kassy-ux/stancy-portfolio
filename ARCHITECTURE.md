@@ -1,0 +1,337 @@
+# Architecture
+
+This document describes how the portfolio system is structured, how data flows through it, and the reasoning behind key design decisions.
+
+---
+
+## System Overview
+
+The project is a two-app monorepo. The `client/` and `server/` folders each have their own `package.json` and are developed and deployed independently.
+
+```
+browser
+  |
+  |-- HTTP GET (static assets, JS bundle)
+  |                    |
+  |           Vite dev server (port 5173)
+  |           OR static file host (production)
+  |
+  |-- API calls to /api/*
+  |                    |
+  |           Vite proxy  ─────────────────────────> Express server (port 5000)
+  |           (dev only)                                      |
+  |                                                  Drizzle ORM
+  |                                                           |
+  |                                                  Neon PostgreSQL
+  |
+  |-- Image/file uploads (via Express, streamed to Cloudinary)
+```
+
+In production, the Vite proxy is replaced by the deployment platform's reverse proxy or CORS policy. The Express API is deployed to a Node.js host, and the built client is deployed to a static host.
+
+---
+
+## Package Structure
+
+```
+portfolio/
+  client/                  React + Vite frontend
+    src/
+      components/
+        admin/             Eight management panels (one per resource type)
+        layout/            Navbar, Footer, DotNavigation
+        sections/          Nine public-facing page sections
+        three/             Three.js hero background (HeroBackground.tsx)
+      hooks/               useActiveSection (scroll spy)
+      lib/                 animations.ts, auth.ts, router.ts, utils.ts
+      pages/               Home.tsx, Login.tsx, admin/Dashboard.tsx
+      services/            api.ts (public), adminApi.ts (authenticated)
+      types/               index.ts (all shared TypeScript interfaces)
+
+  server/
+    src/
+      Community/           controller, routes, service
+      Contact/             controller, routes, service
+      Education/           controller, routes, service
+      Experience/          controller, routes, service
+      Projects/            controller, routes, service
+      Skills/              controller, routes, service
+      Testimonials/        controller, routes, service
+      User/                controller, routes, service (auth)
+      Middleware/          auth.ts (JWT), upload.ts (multer)
+      config/              cloudinary.ts, swagger.ts
+      db/                  index.ts (Drizzle client), schema.ts, seed.ts
+      scripts/             create-admin.ts
+      index.ts             Express app + route mounting
+```
+
+---
+
+## Data Flow: Public Portfolio
+
+When a visitor opens the site, TanStack Query fetches each section's data independently.
+
+```
+Home.tsx
+  |
+  +-- useQuery(['settings'])        -> GET /api/settings    -> siteSettingsTable
+  +-- useQuery(['projects'])        -> GET /api/projects    -> projectsTable
+  +-- useQuery(['skills'])          -> GET /api/skills      -> skillsTable
+  +-- useQuery(['experience'])      -> GET /api/experience  -> experienceTable
+  +-- useQuery(['education'])       -> GET /api/education   -> educationTable
+  +-- useQuery(['testimonials'])    -> GET /api/testimonials -> testimonialsTable
+  +-- useQuery(['community'])       -> GET /api/communities  -> communityTable
+```
+
+Each query is independent. If one fails or the server is slow, the others are unaffected. Every section component accepts a `fallbackData` prop so static placeholder content is shown while the query loads.
+
+---
+
+## Data Flow: Admin Panel
+
+The admin panel is a single-page application mounted under `/admin/dashboard`. It is protected by a route guard in `router.ts` that checks for a valid JWT in `localStorage`.
+
+```
+Dashboard.tsx
+  |
+  +-- <ProjectsPanel>  useMutation -> POST/PUT/DELETE /api/projects
+  +-- <SkillsPanel>    useMutation -> POST/PUT/DELETE /api/skills
+  +-- <SettingsPanel>  useMutation -> PUT             /api/settings
+  +-- ...
+```
+
+All mutations in `adminApi.ts` attach the `Authorization: Bearer <token>` header. The token is written to `localStorage` under the key `admin_token` on successful login and removed on logout.
+
+---
+
+## Authentication
+
+```
+POST /api/auth/login
+  body: { email, password }
+        |
+        |-- bcryptjs.compare(password, storedHash)
+        |
+        |-- jwt.sign({ userId, email }, JWT_SECRET, { expiresIn: '7d' })
+        |
+        response: { token }
+
+client stores token in localStorage['admin_token']
+
+subsequent admin requests:
+  Authorization: Bearer <token>
+        |
+  authenticate middleware
+        |
+        |-- jwt.verify(token, JWT_SECRET)
+        |-- attaches req.user = { userId, email }
+        |-- calls next()
+        |   OR returns 401 if invalid/expired
+```
+
+The `authenticate` middleware in `server/src/Middleware/auth.ts` is applied to every protected route. Public GET routes do not require a token.
+
+---
+
+## Settings System
+
+Personal details and site configuration are stored in a single key-value table:
+
+```sql
+siteSettingsTable: { key TEXT PRIMARY KEY, value TEXT }
+```
+
+This avoids adding columns every time a new setting is needed. The service layer reduces all rows into a plain object at read time:
+
+```ts
+// getAllSettings (simplified)
+const rows = await db.select().from(siteSettingsTable);
+return rows.reduce((acc, row) => ({ ...acc, [row.key]: row.value }), {});
+```
+
+On write, each key-value pair is upserted independently. The current settings keys are:
+
+| Key | Purpose |
+|-----|---------|
+| `tagline` | Hero section sub-heading |
+| `heroImageUrl` | Hero profile image (Cloudinary URL) |
+| `heroFocalPoint` | Focal point for hero image as `"x,y"` (0–100 range) |
+| `resumeUrl` | Downloadable resume (Cloudinary URL) |
+| `githubUrl` | GitHub profile link |
+| `linkedinUrl` | LinkedIn profile link |
+| `twitterUrl` | Twitter/X profile link |
+| `email` | Contact section email |
+| `phone` | Contact section phone |
+| `location` | Contact section location text |
+| `aboutBio` | About section long-form bio |
+
+---
+
+## File Upload Pipeline
+
+All file uploads (images, PDFs) follow the same path:
+
+```
+client FormData POST
+        |
+  multer middleware (server)
+        |-- storage: memoryStorage (file is held in req.file.buffer)
+        |-- limits: 5 MB
+        |
+  uploadToCloudinary helper
+        |-- opens a Cloudinary upload stream
+        |-- pipes req.file.buffer through the stream
+        |-- resolves with { secure_url, public_id }
+        |
+  controller saves secure_url to the database
+        |
+  response: { url: secure_url }
+```
+
+Files are never written to disk on the server. The buffer is streamed directly to Cloudinary. This keeps the server stateless and compatible with platforms that have ephemeral filesystems.
+
+---
+
+## Frontend Rendering Pattern
+
+Each section component follows the same pattern:
+
+```ts
+// 1. Fetch data
+const { data } = useQuery({ queryKey: ['skills'], queryFn: api.skills.getAll });
+
+// 2. Fall back to static placeholder if query hasn't resolved
+const skills = data ?? fallbackSkills;
+
+// 3. Render
+return <section>...</section>;
+```
+
+This means the page is never empty — placeholder data is visible immediately, and then replaced when the API responds. The same pattern is used in all nine sections.
+
+---
+
+## Routing
+
+TanStack Router manages three routes:
+
+| Route | Component | Access |
+|-------|-----------|--------|
+| `/` | `Home.tsx` | Public |
+| `/admin/login` | `Login.tsx` | Public |
+| `/admin/dashboard` | `Dashboard.tsx` | Protected (redirect to login if no token) |
+
+Navigation on the home page is scroll-based. `DotNavigation` uses the `useActiveSection` hook, which attaches an `IntersectionObserver` to each section's element and updates a shared state as sections enter and leave the viewport.
+
+---
+
+## Three.js Hero Background
+
+`HeroBackground.tsx` renders a full-screen WebGL canvas behind the hero section using React Three Fiber. It renders animated, semi-transparent geometric shapes. The component is purely visual and has no data dependencies. If WebGL is unavailable it renders nothing and the hero section falls back to its CSS background.
+
+---
+
+## API Reference
+
+All routes are prefixed with `/api`. Protected routes require `Authorization: Bearer <token>`.
+
+### Authentication
+
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| POST | `/auth/login` | Public | Returns a JWT on valid credentials |
+| POST | `/auth/register` | Protected | Creates a new admin user |
+
+### Settings
+
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| GET | `/settings` | Public | Returns all settings as a key-value object |
+| PUT | `/settings` | Protected | Upserts one or more settings keys |
+| GET | `/settings/tagline` | Public | Returns the tagline setting |
+| POST | `/settings/tagline` | Protected | Updates the tagline setting |
+| GET | `/settings/resume` | Public | Returns the resume URL |
+| POST | `/settings/resume` | Protected | Updates the resume URL |
+| POST | `/settings/resume/upload` | Protected | Uploads a PDF to Cloudinary, saves URL |
+| POST | `/auth/upload/hero` | Protected | Uploads hero image to Cloudinary, saves URL |
+
+### Projects
+
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| GET | `/projects` | Public | All projects |
+| GET | `/projects/featured` | Public | Featured projects only |
+| GET | `/projects/:id` | Public | Single project |
+| POST | `/projects` | Protected | Create project |
+| PUT | `/projects/:id` | Protected | Update project |
+| DELETE | `/projects/:id` | Protected | Delete project |
+| POST | `/projects/:id/image` | Protected | Upload project image |
+| PATCH | `/projects/:id/featured` | Protected | Toggle featured flag |
+
+### Skills
+
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| GET | `/skills` | Public | All skills |
+| GET | `/skills/:id` | Public | Single skill |
+| POST | `/skills` | Protected | Create skill |
+| PUT | `/skills/:id` | Protected | Update skill |
+| DELETE | `/skills/:id` | Protected | Delete skill |
+| POST | `/skills/:id/icon` | Protected | Upload skill icon |
+
+### Experience
+
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| GET | `/experience` | Public | All experience entries |
+| GET | `/experience/:id` | Public | Single entry |
+| POST | `/experience` | Protected | Create entry |
+| PUT | `/experience/:id` | Protected | Update entry |
+| DELETE | `/experience/:id` | Protected | Delete entry |
+
+### Education
+
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| GET | `/education` | Public | All education entries |
+| GET | `/education/:id` | Public | Single entry |
+| POST | `/education` | Protected | Create entry |
+| PUT | `/education/:id` | Protected | Update entry |
+| DELETE | `/education/:id` | Protected | Delete entry |
+| POST | `/education/:id/logo` | Protected | Upload institution logo |
+
+### Testimonials
+
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| GET | `/testimonials` | Public | All testimonials |
+| GET | `/testimonials/:id` | Public | Single testimonial |
+| POST | `/testimonials` | Protected | Create testimonial |
+| PUT | `/testimonials/:id` | Protected | Update testimonial |
+| DELETE | `/testimonials/:id` | Protected | Delete testimonial |
+| POST | `/testimonials/:id/avatar` | Protected | Upload avatar image |
+
+### Contact
+
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| POST | `/contact` | Public | Submit contact message |
+| GET | `/contact` | Protected | List all messages |
+| GET | `/contact/:id` | Protected | Single message |
+| DELETE | `/contact/:id` | Protected | Delete message |
+| PATCH | `/contact/:id/read` | Protected | Mark message as read |
+
+### Community
+
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| GET | `/communities` | Public | All community entries |
+| GET | `/communities/:id` | Public | Single entry |
+| POST | `/communities` | Protected | Create entry |
+| PUT | `/communities/:id` | Protected | Update entry |
+| DELETE | `/communities/:id` | Protected | Delete entry |
+| POST | `/communities/:id/logo` | Protected | Upload community logo |
+
+---
+
+Interactive API documentation (Swagger UI) is available at `/api/docs` while the server is running.
