@@ -17,12 +17,13 @@ const post = async <T>(endpoint: string, body: unknown): Promise<T> => {
 };
 
 export const api = {
-  projects:     { getAll: () => get('/projects'), getFeatured: () => get('/projects/featured') },
-  skills:       { getAll: () => get('/skills') },
-  experience:   { getAll: () => get('/experience') },
-  education:    { getAll: () => get('/education') },
-  testimonials: { getAll: () => get('/testimonials') },
-  community:    { getAll: () => get('/communities') },
-  settings:     { get:    () => get('/settings') },
-  contact:      { send: (body: unknown) => post('/contact', body) },
+  projects:      { getAll: ()  => get('/projects'),
+                   getFeatured: () => get('/projects/featured') },
+  skills:        { getAll: ()  => get('/skills') },
+  experience:    { getAll: ()  => get('/experience') },
+  education:     { getAll: ()  => get('/education') },
+  testimonials:  { getAll: ()  => get('/testimonials') },
+  community:     { getAll: ()  => get('/communities') },
+  settings:      { get: ()     => get('/settings') },
+  contact:       { send: (body: unknown) => post('/contact', body) },
 };

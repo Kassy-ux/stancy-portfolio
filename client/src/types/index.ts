@@ -1,4 +1,4 @@
-﻿export interface Project {
+export interface Project {
   projectId: number;
   title: string;
   description: string;
@@ -61,13 +61,10 @@ export interface Community {
   order: number;
 }
 
-export interface Contact {
-  contactId: number;
+export interface ContactMessage {
   name: string;
   email: string;
   message: string;
-  isRead: boolean;
-  createdAt: string | Date;
 }
 
 export interface Settings {
@@ -77,6 +74,6 @@ export interface Settings {
   githubUrl: string | null;
   linkedinUrl: string | null;
   twitterUrl: string | null;
-  primaryColor?: string;
-  accentColor?: string;
+  primaryColor: string;
+  accentColor: string;
 }
