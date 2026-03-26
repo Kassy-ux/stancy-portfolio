@@ -81,6 +81,7 @@ export const certificationApi = {
   create:  (d: Partial<Certification>)         => aPost('/certification', d)             as Promise<Certification>,
   update:  (id: number, d: Partial<Certification>) => aPut(`/certification/${id}`, d)    as Promise<Certification>,
   delete:  (id: number)                        => aDel(`/certification/${id}`),
+  uploadImage: (id: number, f: File)           => aUpload(`/certification/${id}/image`, 'image', f) as Promise<{ certificateUrl: string }>,
 };
 
 // ── Education ─────────────────────────────────────────────────────────────────

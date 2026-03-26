@@ -4,8 +4,10 @@ import {
     getCertificationById,
     createCertification,
     updateCertification,
-    deleteCertification
+    deleteCertification,
+    uploadCertificationImage
 } from './certification.controller';
+import { upload, uploadToCloudinary } from '../Middleware/upload';
 import { authenticate } from '../Middleware/auth';
 
 export const CertificationRouter = Router();
@@ -50,3 +52,15 @@ CertificationRouter.get('/:id', getCertificationById);
 CertificationRouter.post('/', authenticate, createCertification);
 CertificationRouter.put('/:id', authenticate, updateCertification);
 CertificationRouter.delete('/:id', authenticate, deleteCertification);
+
+/**
+ * @openapi
+ * /certification/{id}/image:
+ *   post:
+ *     tags:
+ *       - "🔐 Certifications (Admin)"
+ *     summary: Upload certificate image/PDF to Cloudinary
+ *     security:
+ *       - bearerAuth: []
+ */
+CertificationRouter.post('/:id/image', authenticate, upload.single('image'), uploadToCloudinary('portfolio/certifications'), uploadCertificationImage);
