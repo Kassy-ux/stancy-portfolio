@@ -17,15 +17,15 @@ export const getAllCommunities = async (req: Request, res: Response) => {
     }
 };
 
-// GET /api/community/:communityId
+// GET /api/community/:id
 export const getCommunityById = async (req: Request, res: Response) => {
-    const communityId = parseInt(req.params.communityId as string);
-    if (isNaN(communityId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: "Invalid community ID" });
         return;
     }
     try {
-        const communityData = await getCommunityByIdService(communityId);
+        const communityData = await getCommunityByIdService(id);
         if (!communityData) {
             res.status(404).json({ error: "Community not found" });
             return;
@@ -55,10 +55,10 @@ export const createCommunity = async (req: Request, res: Response) => {
     }
 };
 
-// PUT /api/community/:communityId
+// PUT /api/community/:id
 export const updateCommunity = async (req: Request, res: Response) => {
-    const communityId = parseInt(req.params.communityId as string);
-    if (isNaN(communityId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: "Invalid community ID" });
         return;
     }
@@ -68,7 +68,7 @@ export const updateCommunity = async (req: Request, res: Response) => {
         return;
     }
     try {
-        const result = await updateCommunityService(communityId, { name, role, description, logoUrl, bioUrl, order });
+        const result = await updateCommunityService(id, { name, role, description, logoUrl, bioUrl, order });
         res.status(200).json({ message: result });
     } catch (error) {
         console.error("Error updating community:", error);
@@ -77,15 +77,15 @@ export const updateCommunity = async (req: Request, res: Response) => {
     }
 };
 
-// DELETE /api/community/:communityId
+// DELETE /api/community/:id
 export const deleteCommunity = async (req: Request, res: Response) => {
-    const communityId = parseInt(req.params.communityId as string);
-    if (isNaN(communityId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: "Invalid community ID" });
         return;
     }
     try {
-        const result = await deleteCommunityService(communityId);
+        const result = await deleteCommunityService(id);
         res.status(200).json({ message: result });
     } catch (error) {
         console.error("Error deleting community:", error);
@@ -94,10 +94,10 @@ export const deleteCommunity = async (req: Request, res: Response) => {
     }
 };
 
-// POST /api/communities/:communityId/logo — upload community logo to Cloudinary
+// POST /api/communities/:id/logo — upload community logo to Cloudinary
 export const uploadCommunityLogo = async (req: Request, res: Response) => {
-    const communityId = parseInt(req.params.communityId as string);
-    if (isNaN(communityId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: "Invalid community ID" });
         return;
     }
@@ -107,12 +107,12 @@ export const uploadCommunityLogo = async (req: Request, res: Response) => {
         return;
     }
     try {
-        const existing = await getCommunityByIdService(communityId);
+        const existing = await getCommunityByIdService(id);
         if (!existing) {
             res.status(404).json({ error: "Community not found" });
             return;
         }
-        const result = await updateCommunityService(communityId, { ...existing, logoUrl });
+        const result = await updateCommunityService(id, { ...existing, logoUrl });
         res.status(200).json({ message: result, logoUrl });
     } catch (error) {
         console.error("Error uploading community logo:", error);

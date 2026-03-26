@@ -21,8 +21,8 @@ export const useDynamicHead = () => {
     const section = sections.find(sec => sec.id === activeSection);
     const label = section?.label ?? 'Home';
     document.title = activeSection === 'hero'
-      ? 'Bensidney Githu — Portfolio'
-      : `${label} | Bensidney Githu`;
+      ? 'Stancy Ngereso — Portfolio'
+      : `${label} | Stancy Ngereso`;
   }, [activeSection]);
 
   // Update favicon whenever heroImageUrl changes

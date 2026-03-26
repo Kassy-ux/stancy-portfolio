@@ -1,4 +1,4 @@
-﻿import { motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Code2, Globe, Server, Layers } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fadeInLeft, fadeInRight, fadeInUp, staggerContainer } from '../../lib/animations';
@@ -133,7 +133,7 @@ const About = () => {
               <p className="font-body text-[#8892A4] text-lg mb-1">Who am I?</p>
               <h3 className="font-heading font-bold text-2xl text-[#0A0A0F] mb-4">
                 {"I'm "}
-                <span className="text-[#1A56FF]">Bensidney Githu Ndung&apos;u</span>
+                <span className="text-[#1A56FF]">Stancy Ngereso</span>
                 {", Full Stack Developer"}
               </h3>
               <p className="font-body text-[#8892A4] leading-relaxed">

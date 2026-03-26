@@ -31,15 +31,15 @@ export const getFeaturedProjects = async (_req: Request, res: Response) => {
     }
 };
 
-// GET /api/projects/:projectId
+// GET /api/projects/:id
 export const getProjectById = async (req: Request, res: Response) => {
-    const projectId = parseInt(req.params.projectId as string);
-    if (isNaN(projectId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid project ID' });
         return;
     }
     try {
-        const project = await getProjectByIdService(projectId);
+        const project = await getProjectByIdService(id);
         if (!project) {
             res.status(404).json({ error: 'Project not found' });
             return;
@@ -69,10 +69,10 @@ export const createProject = async (req: Request, res: Response) => {
     }
 };
 
-// PUT /api/projects/:projectId
+// PUT /api/projects/:id
 export const updateProject = async (req: Request, res: Response) => {
-    const projectId = parseInt(req.params.projectId as string);
-    if (isNaN(projectId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid project ID' });
         return;
     }
@@ -83,7 +83,7 @@ export const updateProject = async (req: Request, res: Response) => {
     }
     const techStackArray = Array.isArray(techStack) ? techStack : techStack.split(',').map((s: string) => s.trim());
     try {
-        const result = await updateProjectService(projectId, { title, description, techStack: techStackArray, imageUrl, liveUrl, githubUrl, featured, order });
+        const result = await updateProjectService(id, { title, description, techStack: techStackArray, imageUrl, liveUrl, githubUrl, featured, order });
         res.status(200).json({ message: result });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Internal Server Error';
@@ -91,15 +91,15 @@ export const updateProject = async (req: Request, res: Response) => {
     }
 };
 
-// DELETE /api/projects/:projectId
+// DELETE /api/projects/:id
 export const deleteProject = async (req: Request, res: Response) => {
-    const projectId = parseInt(req.params.projectId as string);
-    if (isNaN(projectId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid project ID' });
         return;
     }
     try {
-        const result = await deleteProjectService(projectId);
+        const result = await deleteProjectService(id);
         res.status(200).json({ message: result });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Internal Server Error';
@@ -107,15 +107,15 @@ export const deleteProject = async (req: Request, res: Response) => {
     }
 };
 
-// PATCH /api/projects/:projectId/featured — toggle featured flag
+// PATCH /api/projects/:id/featured — toggle featured flag
 export const toggleFeaturedProject = async (req: Request, res: Response) => {
-    const projectId = parseInt(req.params.projectId as string);
-    if (isNaN(projectId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid project ID' });
         return;
     }
     try {
-        const result = await toggleFeaturedProjectService(projectId);
+        const result = await toggleFeaturedProjectService(id);
         res.status(200).json(result);
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Internal Server Error';
@@ -123,10 +123,10 @@ export const toggleFeaturedProject = async (req: Request, res: Response) => {
     }
 };
 
-// POST /api/projects/:projectId/image  — upload project image via Cloudinary
+// POST /api/projects/:id/image  — upload project image via Cloudinary
 export const uploadProjectImage = async (req: Request, res: Response) => {
-    const projectId = parseInt(req.params.projectId as string);
-    if (isNaN(projectId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid project ID' });
         return;
     }
@@ -136,12 +136,12 @@ export const uploadProjectImage = async (req: Request, res: Response) => {
         return;
     }
     try {
-        const project = await getProjectByIdService(projectId);
+        const project = await getProjectByIdService(id);
         if (!project) {
             res.status(404).json({ error: 'Project not found' });
             return;
         }
-        const result = await updateProjectService(projectId, { ...project, imageUrl });
+        const result = await updateProjectService(id, { ...project, imageUrl });
         res.status(200).json({ message: result, imageUrl });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Internal Server Error';

@@ -47,7 +47,7 @@ export default function TestimonialsPanel() {
     const id = toast.loading(editing ? 'Saving...' : 'Creating...');
     try {
       setSaving(true);
-      if (editing) await testimonialsApi.update(editing.testimonialId, fromForm(form));
+      if (editing) await testimonialsApi.update(editing.id, fromForm(form));
       else await testimonialsApi.create(fromForm(form));
       toast.success(editing ? 'Testimonial updated' : 'Testimonial created', { id });
       setModal(false); await load();
@@ -77,11 +77,11 @@ export default function TestimonialsPanel() {
     const id = toast.loading('Uploading avatar...');
     try {
       setModalAvatarUploading(true);
-      await testimonialsApi.uploadAvatar(editing.testimonialId, file);
+      await testimonialsApi.uploadAvatar(editing.id, file);
       toast.success('Avatar uploaded', { id });
       const updated = await testimonialsApi.getAll();
       setItems(updated);
-      const fresh = updated.find(t => t.testimonialId === editing.testimonialId);
+      const fresh = updated.find(t => t.id === editing.id);
       if (fresh) setEditing(fresh);
     } catch { toast.error('Upload failed', { id }); }
     finally { setModalAvatarUploading(false); e.target.value = ''; }
@@ -106,7 +106,7 @@ export default function TestimonialsPanel() {
       ) : (
         <div className="grid sm:grid-cols-2 gap-3">
           {items.map(t => (
-            <div key={t.testimonialId} className="bg-white rounded-2xl border border-[#E6EAF4] shadow-sm p-5">
+            <div key={t.id} className="bg-white rounded-2xl border border-[#E6EAF4] shadow-sm p-5">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3 flex-1 min-w-0">
                   <button
@@ -133,17 +133,17 @@ export default function TestimonialsPanel() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
-                  {uploadingId === t.testimonialId
+                  {uploadingId === t.id
                     ? <Loader2 size={14} className="text-[#1A56FF] animate-spin mx-1" />
-                    : <button onClick={() => triggerUpload(t.testimonialId)} className={BTN_GHOST} title="Upload avatar"><ImageIcon size={14} /></button>
+                    : <button onClick={() => triggerUpload(t.id)} className={BTN_GHOST} title="Upload avatar"><ImageIcon size={14} /></button>
                   }
                   <button onClick={() => openEdit(t)} className={BTN_GHOST}><Pencil size={14} /></button>
-                  {deleteId === t.testimonialId ? (
+                  {deleteId === t.id ? (
                     <div className="flex items-center gap-1">
-                      <button onClick={() => handleDelete(t.testimonialId)} className="px-2 py-1 bg-red-50 text-red-600 rounded-lg text-xs font-semibold border border-red-100">Del</button>
+                      <button onClick={() => handleDelete(t.id)} className="px-2 py-1 bg-red-50 text-red-600 rounded-lg text-xs font-semibold border border-red-100">Del</button>
                       <button onClick={() => setDeleteId(null)} className="px-2 py-1 text-[#8892A4] rounded-lg text-xs">✕</button>
                     </div>
-                  ) : <button onClick={() => setDeleteId(t.testimonialId)} className="p-2 text-[#8892A4] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} /></button>}
+                  ) : <button onClick={() => setDeleteId(t.id)} className="p-2 text-[#8892A4] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} /></button>}
                 </div>
               </div>
               <p className="mt-3 text-sm text-[#8892A4] line-clamp-3 italic">"{t.message}"</p>

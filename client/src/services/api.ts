@@ -19,7 +19,7 @@ const post = async <T>(endpoint: string, body: unknown): Promise<T> => {
 export const api = {
   projects:      { getAll: () => get('/projects') },
   skills:        { getAll: ()  => get('/skills') },
-  experience:    { getAll: ()  => get('/experience') },
+  certification: { getAll: ()  => get('/certification') },
   education:     { getAll: ()  => get('/education') },
   testimonials:  { getAll: ()  => get('/testimonials') },
   community:     { getAll: ()  => get('/communities') },

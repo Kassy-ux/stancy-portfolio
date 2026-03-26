@@ -8,8 +8,8 @@
       "name": "communityTable",
       "schema": "",
       "columns": {
-        "communityId": {
-          "name": "communityId",
+        "id": {
+          "name": "id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -64,8 +64,8 @@
       "name": "contactMessagesTable",
       "schema": "",
       "columns": {
-        "contactMessageId": {
-          "name": "contactMessageId",
+        "id": {
+          "name": "id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -115,8 +115,8 @@
       "name": "educationTable",
       "schema": "",
       "columns": {
-        "educationId": {
-          "name": "educationId",
+        "id": {
+          "name": "id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -239,8 +239,8 @@
       "name": "projectsTable",
       "schema": "",
       "columns": {
-        "projectId": {
-          "name": "projectId",
+        "id": {
+          "name": "id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -347,8 +347,8 @@
       "name": "skillsTable",
       "schema": "",
       "columns": {
-        "skillId": {
-          "name": "skillId",
+        "id": {
+          "name": "id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -391,8 +391,8 @@
       "name": "testimonialsTable",
       "schema": "",
       "columns": {
-        "testimonialId": {
-          "name": "testimonialId",
+        "id": {
+          "name": "id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -448,8 +448,8 @@
       "name": "usersTable",
       "schema": "",
       "columns": {
-        "userId": {
-          "name": "userId",
+        "id": {
+          "name": "id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true

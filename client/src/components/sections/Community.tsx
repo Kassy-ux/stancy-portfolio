@@ -1,4 +1,4 @@
-﻿import { motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { ExternalLink, Terminal } from 'lucide-react';
 import { fadeInLeft, fadeInUp } from '../../lib/animations';
@@ -13,7 +13,7 @@ interface CommunityDisplay extends CommunityType {
 
 const fallbackCommunity: CommunityDisplay[] = [
   {
-    communityId: 1,
+    id: 1,
     name: 'Microsoft Learn Student Ambassadors',
     role: 'Gold Ambassador',
     description:
@@ -29,7 +29,7 @@ const fallbackCommunity: CommunityDisplay[] = [
     ],
   },
   {
-    communityId: 2,
+    id: 2,
     name: 'Koding & Kahawa Developers',
     role: 'Contributor',
     description:
@@ -45,7 +45,7 @@ const fallbackCommunity: CommunityDisplay[] = [
     ],
   },
   {
-    communityId: 3,
+    id: 3,
     name: 'Computer Society of Kirinyaga',
     role: 'Member',
     description:
@@ -201,7 +201,7 @@ const Community = () => {
   const rawData = communityData as CommunityType[] | undefined;
 
   // Merge live API data with local display metadata — match by name, not by index
-  const communities: CommunityDisplay[] = rawData
+  const communities: CommunityDisplay[] = (rawData && rawData.length > 0)
     ? rawData.map((item) => {
         const match = fallbackCommunity.find(
           (f) => f.name.toLowerCase() === item.name.toLowerCase()
@@ -248,7 +248,7 @@ const Community = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {communities.map((item, i) => (
-            <CommunityCard key={item.communityId} item={item} index={i} />
+            <CommunityCard key={item.id} item={item} index={i} />
           ))}
         </div>
 

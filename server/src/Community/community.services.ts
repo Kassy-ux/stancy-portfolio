@@ -14,9 +14,9 @@ export const getAllCCommunitiesService = async (): Promise<TCommunitySelect[] | 
 
 //Get a single community by ID
 
-export const getCommunityByIdService = async (communityId: number): Promise<TCommunitySelect | undefined> => {
+export const getCommunityByIdService = async (id: number): Promise<TCommunitySelect | undefined> => {
     const result = await db.query.communityTable.findFirst({
-        where: eq(communityTable.communityId, communityId)
+        where: eq(communityTable.id, id)
     });
     return result;
 }
@@ -28,14 +28,14 @@ export const createCommunityService = async (communityData: TCommunityInsert): P
 };
 
 //Update an existing community
-export const updateCommunityService = async (communityId: number, communityData: TCommunityInsert): Promise<string> => {
-    await db.update(communityTable).set(communityData).where(eq(communityTable.communityId, communityId));
+export const updateCommunityService = async (id: number, communityData: TCommunityInsert): Promise<string> => {
+    await db.update(communityTable).set(communityData).where(eq(communityTable.id, id));
     return 'Community updated successfully';
 };
 
 //Delete a community
-export const deleteCommunityService = async (communityId: number): Promise<string> => {
-    await db.delete(communityTable).where(eq(communityTable.communityId, communityId));
+export const deleteCommunityService = async (id: number): Promise<string> => {
+    await db.delete(communityTable).where(eq(communityTable.id, id));
     return 'Community deleted successfully';
 };
 

@@ -18,15 +18,15 @@ export const getAllEducation = async (_req: Request, res: Response) => {
     }
 };
 
-// GET /api/education/:educationId
+// GET /api/education/:id
 export const getEducationById = async (req: Request, res: Response) => {
-    const educationId = parseInt(req.params.educationId as string);
-    if (isNaN(educationId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid education ID' });
         return;
     }
     try {
-        const entry = await getEducationByIdService(educationId);
+        const entry = await getEducationByIdService(id);
         if (!entry) {
             res.status(404).json({ error: 'Education entry not found' });
             return;
@@ -54,10 +54,10 @@ export const createEducation = async (req: Request, res: Response) => {
     }
 };
 
-// PUT /api/education/:educationId
+// PUT /api/education/:id
 export const updateEducation = async (req: Request, res: Response) => {
-    const educationId = parseInt(req.params.educationId as string);
-    if (isNaN(educationId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid education ID' });
         return;
     }
@@ -67,7 +67,7 @@ export const updateEducation = async (req: Request, res: Response) => {
         return;
     }
     try {
-        const result = await updateEducationService(educationId, { institution, degree, description, logoUrl, startDate, endDate, order });
+        const result = await updateEducationService(id, { institution, degree, description, logoUrl, startDate, endDate, order });
         res.status(200).json({ message: result });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Internal Server Error';
@@ -75,15 +75,15 @@ export const updateEducation = async (req: Request, res: Response) => {
     }
 };
 
-// DELETE /api/education/:educationId
+// DELETE /api/education/:id
 export const deleteEducation = async (req: Request, res: Response) => {
-    const educationId = parseInt(req.params.educationId as string);
-    if (isNaN(educationId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid education ID' });
         return;
     }
     try {
-        const result = await deleteEducationService(educationId);
+        const result = await deleteEducationService(id);
         res.status(200).json({ message: result });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Internal Server Error';
@@ -91,10 +91,10 @@ export const deleteEducation = async (req: Request, res: Response) => {
     }
 };
 
-// POST /api/education/:educationId/logo  — upload logo via Cloudinary
+// POST /api/education/:id/logo  — upload logo via Cloudinary
 export const uploadEducationLogo = async (req: Request, res: Response) => {
-    const educationId = parseInt(req.params.educationId as string);
-    if (isNaN(educationId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid education ID' });
         return;
     }
@@ -104,12 +104,12 @@ export const uploadEducationLogo = async (req: Request, res: Response) => {
         return;
     }
     try {
-        const entry = await getEducationByIdService(educationId);
+        const entry = await getEducationByIdService(id);
         if (!entry) {
             res.status(404).json({ error: 'Education entry not found' });
             return;
         }
-        const result = await updateEducationService(educationId, { ...entry, logoUrl });
+        const result = await updateEducationService(id, { ...entry, logoUrl });
         res.status(200).json({ message: result, logoUrl });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Internal Server Error';

@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { fadeInLeft, fadeInUp } from '../../lib/animations';
@@ -6,26 +6,26 @@ import { api } from '../../services/api';
 import { Skill } from '../../types';
 
 const fallbackSkills: Skill[] = [
-  { skillId: 1,  name: 'TypeScript',   category: 'Languages',  iconUrl: null, order: 1 },
-  { skillId: 2,  name: 'JavaScript',   category: 'Languages',  iconUrl: null, order: 2 },
-  { skillId: 3,  name: 'C#',           category: 'Languages',  iconUrl: null, order: 3 },
-  { skillId: 4,  name: 'React',        category: 'Frontend',   iconUrl: null, order: 1 },
-  { skillId: 5,  name: 'Next.js',      category: 'Frontend',   iconUrl: null, order: 2 },
-  { skillId: 6,  name: 'Tailwind CSS', category: 'Frontend',   iconUrl: null, order: 3 },
-  { skillId: 7,  name: 'React Native', category: 'Frontend',   iconUrl: null, order: 4 },
-  { skillId: 8,  name: 'Kotlin',       category: 'Frontend',   iconUrl: null, order: 5 },
-  { skillId: 9,  name: 'Node.js',      category: 'Backend',    iconUrl: null, order: 1 },
-  { skillId: 10, name: 'Express.js',   category: 'Backend',    iconUrl: null, order: 2 },
-  { skillId: 11, name: 'NestJS',       category: 'Backend',    iconUrl: null, order: 3 },
-  { skillId: 12, name: 'REST APIs',    category: 'Backend',    iconUrl: null, order: 4 },
-  { skillId: 13, name: 'PostgreSQL',   category: 'Databases',  iconUrl: null, order: 1 },
-  { skillId: 14, name: 'MySQL',        category: 'Databases',  iconUrl: null, order: 2 },
-  { skillId: 15, name: 'MongoDB',      category: 'Databases',  iconUrl: null, order: 3 },
-  { skillId: 16, name: 'Docker',       category: 'DevOps',     iconUrl: null, order: 1 },
-  { skillId: 17, name: 'Git / GitHub', category: 'DevOps',     iconUrl: null, order: 2 },
-  { skillId: 18, name: 'AWS',          category: 'DevOps',     iconUrl: null, order: 3 },
-  { skillId: 19, name: 'CI/CD',        category: 'DevOps',     iconUrl: null, order: 4 },
-  { skillId: 20, name: 'Jest',         category: 'DevOps',     iconUrl: null, order: 5 },
+  { id: 1,  name: 'TypeScript',   category: 'Languages',  iconUrl: null, order: 1 },
+  { id: 2,  name: 'JavaScript',   category: 'Languages',  iconUrl: null, order: 2 },
+  { id: 3,  name: 'C#',           category: 'Languages',  iconUrl: null, order: 3 },
+  { id: 4,  name: 'React',        category: 'Frontend',   iconUrl: null, order: 1 },
+  { id: 5,  name: 'Next.js',      category: 'Frontend',   iconUrl: null, order: 2 },
+  { id: 6,  name: 'Tailwind CSS', category: 'Frontend',   iconUrl: null, order: 3 },
+  { id: 7,  name: 'React Native', category: 'Frontend',   iconUrl: null, order: 4 },
+  { id: 8,  name: 'Kotlin',       category: 'Frontend',   iconUrl: null, order: 5 },
+  { id: 9,  name: 'Node.js',      category: 'Backend',    iconUrl: null, order: 1 },
+  { id: 10, name: 'Express.js',   category: 'Backend',    iconUrl: null, order: 2 },
+  { id: 11, name: 'NestJS',       category: 'Backend',    iconUrl: null, order: 3 },
+  { id: 12, name: 'REST APIs',    category: 'Backend',    iconUrl: null, order: 4 },
+  { id: 13, name: 'PostgreSQL',   category: 'Databases',  iconUrl: null, order: 1 },
+  { id: 14, name: 'MySQL',        category: 'Databases',  iconUrl: null, order: 2 },
+  { id: 15, name: 'MongoDB',      category: 'Databases',  iconUrl: null, order: 3 },
+  { id: 16, name: 'Docker',       category: 'DevOps',     iconUrl: null, order: 1 },
+  { id: 17, name: 'Git / GitHub', category: 'DevOps',     iconUrl: null, order: 2 },
+  { id: 18, name: 'AWS',          category: 'DevOps',     iconUrl: null, order: 3 },
+  { id: 19, name: 'CI/CD',        category: 'DevOps',     iconUrl: null, order: 4 },
+  { id: 20, name: 'Jest',         category: 'DevOps',     iconUrl: null, order: 5 },
 ];
 
 const tabMeta: Record<string, { accent: string; file: string; comment: string }> = {
@@ -42,7 +42,9 @@ const Skills = () => {
     queryFn: api.skills.getAll,
   });
 
-  const skills = (skillsData as Skill[]) ?? fallbackSkills;
+  const skills = (skillsData && (skillsData as Skill[]).length > 0)
+    ? (skillsData as Skill[])
+    : fallbackSkills;
 
   const grouped = skills.reduce<Record<string, Skill[]>>((acc, s) => {
     if (!acc[s.category]) acc[s.category] = [];
@@ -148,7 +150,7 @@ const Skills = () => {
                 <div className="flex flex-wrap gap-3">
                   {activeSkills.map((skill, i) => (
                     <motion.span
-                      key={skill.skillId}
+                      key={skill.id}
                       initial={{ opacity: 0, scale: 0.85 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: i * 0.05, duration: 0.2 }}

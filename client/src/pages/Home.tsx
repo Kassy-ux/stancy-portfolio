@@ -4,7 +4,7 @@ import Footer from '../components/layout/Footer';
 import DotNavigation from '../components/layout/DotNavigation';
 import Hero from '../components/sections/Hero';
 import About from '../components/sections/About';
-import Resume from '../components/sections/Resume';
+import Certification from '../components/sections/Certification';
 import Skills from '../components/sections/Skills';
 import Portfolio from '../components/sections/Portfolio';
 import Education from '../components/sections/Education';
@@ -33,7 +33,7 @@ const Home = () => {
       <DotNavigation />
       <Hero />
       <About />
-      <Resume />
+      <Certification />
       <Skills />
       <Portfolio />
       <Education />

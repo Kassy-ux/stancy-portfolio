@@ -65,9 +65,9 @@ const Hero = () => {
   const s = settings as Record<string, string> | undefined;
   const tagline  = s?.tagline  || 'Code that solves real problems — not just runs. Building scalable web applications from frontend to backend.';
   const photoUrl = s?.heroImageUrl || null;
-  const githubUrl   = s?.githubUrl   || 'https://github.com/bensidney';
-  const linkedinUrl = s?.linkedinUrl || 'https://linkedin.com/in/bensidney';
-  const emailVal    = s?.email       || 'bensidneyndungu@gmail.com';
+  const githubUrl   = s?.githubUrl   || 'https://github.com/Kassy-ux';
+  const linkedinUrl = s?.linkedinUrl || 'https://linkedin.com/in/stancy-ngereso';
+  const emailVal    = s?.email       || 'stancy ngereso4@gmail.com';
 
   return (
     <section
@@ -126,8 +126,8 @@ const Hero = () => {
               </p>
               <h1 className="font-heading font-extrabold text-white leading-tight"
                 style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)' }}>
-                Bensidney<br />
-                <span className="text-[#FFD600]">Githu</span> Ndung'u
+                Stancy<br />
+                <span className="text-[#FFD600]">Ngereso</span>
               </h1>
             </motion.div>
 

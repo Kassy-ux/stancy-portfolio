@@ -1,27 +1,27 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import type { LucideIcon } from 'lucide-react';
 import {
-  Terminal, FolderOpen, Zap, Briefcase, GraduationCap,
+  Terminal, FolderOpen, Zap, Award, GraduationCap,
   Users, MessageSquare, Mail, Settings, LogOut, ChevronRight, Menu, X,
 } from 'lucide-react';
 import { isAuthenticated, clearToken } from '../../lib/auth';
 import { useAdminHead } from '../../hooks/useAdminHead';
 import ProjectsPanel    from '../../components/admin/ProjectsPanel';
 import SkillsPanel      from '../../components/admin/SkillsPanel';
-import ExperiencePanel  from '../../components/admin/ExperiencePanel';
+import CertificationPanel from '../../components/admin/CertificationPanel';
 import EducationPanel   from '../../components/admin/EducationPanel';
 import CommunityPanel   from '../../components/admin/CommunityPanel';
 import TestimonialsPanel from '../../components/admin/TestimonialsPanel';
 import ContactPanel     from '../../components/admin/ContactPanel';
 import SettingsPanel    from '../../components/admin/SettingsPanel';
 
-type Section = 'projects' | 'skills' | 'experience' | 'education' | 'community' | 'testimonials' | 'messages' | 'settings';
+type Section = 'projects' | 'skills' | 'certification' | 'education' | 'community' | 'testimonials' | 'messages' | 'settings';
 
 const navItems: { id: Section; label: string; icon: LucideIcon }[] = [
   { id: 'projects',     label: 'Projects',     icon: FolderOpen    },
   { id: 'skills',       label: 'Skills',       icon: Zap           },
-  { id: 'experience',   label: 'Experience',   icon: Briefcase     },
+  { id: 'certification', label: 'Certification', icon: Award     },
   { id: 'education',    label: 'Education',    icon: GraduationCap },
   { id: 'community',    label: 'Community',    icon: Users         },
   { id: 'testimonials', label: 'Testimonials', icon: MessageSquare },
@@ -32,7 +32,7 @@ const navItems: { id: Section; label: string; icon: LucideIcon }[] = [
 const sectionTitles: Record<Section, string> = {
   projects:     'Projects',
   skills:       'Skills',
-  experience:   'Experience',
+  certification: 'Certification',
   education:    'Education',
   community:    'Community',
   testimonials: 'Testimonials',
@@ -128,7 +128,7 @@ export default function AdminDashboard() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  useAdminHead(`${sectionTitles[active]} — Admin | CodeSidney`);
+  useAdminHead(`${sectionTitles[active]} — Admin | CodeStancy`);
 
   useEffect(() => {
     if (!isAuthenticated()) navigate({ to: '/admin/login' });
@@ -142,7 +142,7 @@ export default function AdminDashboard() {
   const panels: Record<Section, React.ReactNode> = {
     projects:     <ProjectsPanel />,
     skills:       <SkillsPanel />,
-    experience:   <ExperiencePanel />,
+    certification: <CertificationPanel />,
     education:    <EducationPanel />,
     community:    <CommunityPanel />,
     testimonials: <TestimonialsPanel />,

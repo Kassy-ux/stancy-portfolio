@@ -62,7 +62,7 @@ const Navbar = () => {
             <span className={`font-heading font-bold text-base tracking-tight transition-colors duration-300
               ${scrolled ? 'text-[#0A0A0F]' : 'text-white'}`}
             >
-              Code<span className="text-[#1A56FF]">Sidney</span>
+              Code<span className="text-[#1A56FF]">Stancy</span>
             </span>
           </motion.button>
 
@@ -143,7 +143,7 @@ const Navbar = () => {
             {/* Brand in overlay */}
             <div className="absolute top-6 left-4 right-4 flex justify-between items-center px-2">
               <span className="font-heading font-bold text-white text-lg">
-                Code<span className="text-[#1A56FF]">Sidney</span>
+                Code<span className="text-[#1A56FF]">Stancy</span>
               </span>
               <motion.button
                 whileTap={{ scale: 0.9 }}

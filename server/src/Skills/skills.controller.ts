@@ -18,15 +18,15 @@ export const getAllSkills = async (_req: Request, res: Response) => {
     }
 };
 
-// GET /api/skills/:skillId
+// GET /api/skills/:id
 export const getSkillById = async (req: Request, res: Response) => {
-    const skillId = parseInt(req.params.skillId as string);
-    if (isNaN(skillId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid skill ID' });
         return;
     }
     try {
-        const skill = await getSkillByIdService(skillId);
+        const skill = await getSkillByIdService(id);
         if (!skill) {
             res.status(404).json({ error: 'Skill not found' });
             return;
@@ -54,10 +54,10 @@ export const createSkill = async (req: Request, res: Response) => {
     }
 };
 
-// PUT /api/skills/:skillId
+// PUT /api/skills/:id
 export const updateSkill = async (req: Request, res: Response) => {
-    const skillId = parseInt(req.params.skillId as string);
-    if (isNaN(skillId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid skill ID' });
         return;
     }
@@ -67,7 +67,7 @@ export const updateSkill = async (req: Request, res: Response) => {
         return;
     }
     try {
-        const result = await updateSkillService(skillId, { name, category, iconUrl, order });
+        const result = await updateSkillService(id, { name, category, iconUrl, order });
         res.status(200).json({ message: result });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Internal Server Error';
@@ -75,15 +75,15 @@ export const updateSkill = async (req: Request, res: Response) => {
     }
 };
 
-// DELETE /api/skills/:skillId
+// DELETE /api/skills/:id
 export const deleteSkill = async (req: Request, res: Response) => {
-    const skillId = parseInt(req.params.skillId as string);
-    if (isNaN(skillId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid skill ID' });
         return;
     }
     try {
-        const result = await deleteSkillService(skillId);
+        const result = await deleteSkillService(id);
         res.status(200).json({ message: result });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Internal Server Error';
@@ -91,10 +91,10 @@ export const deleteSkill = async (req: Request, res: Response) => {
     }
 };
 
-// POST /api/skills/:skillId/icon  — upload skill icon via Cloudinary
+// POST /api/skills/:id/icon  — upload skill icon via Cloudinary
 export const uploadSkillIcon = async (req: Request, res: Response) => {
-    const skillId = parseInt(req.params.skillId as string);
-    if (isNaN(skillId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid skill ID' });
         return;
     }
@@ -104,12 +104,12 @@ export const uploadSkillIcon = async (req: Request, res: Response) => {
         return;
     }
     try {
-        const skill = await getSkillByIdService(skillId);
+        const skill = await getSkillByIdService(id);
         if (!skill) {
             res.status(404).json({ error: 'Skill not found' });
             return;
         }
-        const result = await updateSkillService(skillId, { ...skill, iconUrl });
+        const result = await updateSkillService(id, { ...skill, iconUrl });
         res.status(200).json({ message: result, iconUrl });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Internal Server Error';

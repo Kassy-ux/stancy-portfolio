@@ -1,5 +1,5 @@
 export interface Project {
-  projectId: number;
+  id: number;
   title: string;
   description: string;
   techStack: string[];
@@ -12,26 +12,26 @@ export interface Project {
 }
 
 export interface Skill {
-  skillId: number;
+  id: number;
   name: string;
   category: string;
   iconUrl: string | null;
   order: number;
 }
 
-export interface Experience {
-  experienceId: number;
-  company: string;
-  role: string;
-  location: string | null;
-  startDate: string;
-  endDate: string | null;
-  bullets: string[] | null;
+export interface Certification {
+  id: number;
+  issuer: string;
+  certificateName: string;
+  description: string | null;
+  issueDate: string;
+  expiryDate: string | null;
+  certificateUrl: string | null;
   order: number;
 }
 
 export interface Education {
-  educationId: number;
+  id: number;
   institution: string;
   degree: string;
   description: string | null;
@@ -42,7 +42,7 @@ export interface Education {
 }
 
 export interface Testimonial {
-  testimonialId: number;
+  id: number;
   name: string;
   role: string;
   avatarUrl: string | null;
@@ -52,7 +52,7 @@ export interface Testimonial {
 }
 
 export interface Community {
-  communityId: number;
+  id: number;
   name: string;
   role: string | null;
   description: string | null;

@@ -1,4 +1,4 @@
-﻿import { motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { Github, ExternalLink, Star, Code2 } from 'lucide-react';
 import { fadeInLeft, fadeInUp, staggerContainer } from '../../lib/animations';
@@ -7,7 +7,7 @@ import { Project } from '../../types';
 
 const fallbackProjects: Project[] = [
   {
-    projectId: 1,
+    id: 1,
     title: 'Bitsa Club Website',
     description:
       'Designed and developed the BITSA web platform to centralize student engagement, featuring role-based access for students, leaders, and administrators, integrated AI-assisted support, event management, and community connectivity.',
@@ -20,7 +20,7 @@ const fallbackProjects: Project[] = [
     createdAt: null,
   },
   {
-    projectId: 2,
+    id: 2,
     title: 'TicKenya — Event Ticketing',
     description:
       'Full-stack Event Ticketing and Venue Booking System with modular React architecture, secure JWT-based APIs, real-time RTK Query, M-Pesa integration, and dynamic role-based dashboards.',
@@ -33,7 +33,7 @@ const fallbackProjects: Project[] = [
     createdAt: null,
   },
   {
-    projectId: 3,
+    id: 3,
     title: 'Portfolio CMS',
     description:
       'A headless CMS powering this portfolio — REST API with JWT auth, Drizzle ORM, and Cloudinary for media management.',
@@ -46,7 +46,7 @@ const fallbackProjects: Project[] = [
     createdAt: null,
   },
   {
-    projectId: 4,
+    id: 4,
     title: 'Auth Microservice',
     description:
       'Reusable JWT + refresh-token auth microservice with role-based access control, rate limiting, and audit logs.',
@@ -221,7 +221,9 @@ const Portfolio = () => {
     queryFn: api.projects.getAll,
   });
 
-  const projects = (projectsData as Project[]) ?? fallbackProjects;
+  const projects = (projectsData && (projectsData as Project[]).length > 0)
+    ? (projectsData as Project[])
+    : fallbackProjects;
   const featured = projects.filter((p) => p.featured);
   const rest = projects.filter((p) => !p.featured);
 
@@ -281,7 +283,7 @@ const Portfolio = () => {
         >
           {/* Featured: span 2 cols */}
           {featured.map((project, i) => (
-            <div key={project.projectId}
+            <div key={project.id}
                  className={featured.length === 1 ? 'md:col-span-2' : ''}>
               <FeaturedCard project={project} index={i} />
             </div>
@@ -289,7 +291,7 @@ const Portfolio = () => {
 
           {/* Rest: single col */}
           {rest.map((project, i) => (
-            <SmallCard key={project.projectId} project={project} index={featured.length + i} />
+            <SmallCard key={project.id} project={project} index={featured.length + i} />
           ))}
         </motion.div>
 
@@ -302,7 +304,7 @@ const Portfolio = () => {
           className="flex justify-center mt-16"
         >
           <motion.a
-            href="https://github.com/sidneyvonex"
+            href="https://github.com/Kassy-ux"
             target="_blank"
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}

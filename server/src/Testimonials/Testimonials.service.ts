@@ -8,9 +8,9 @@ export const getAllTestimonialsService = async (): Promise<TTestimonialSelect[]>
     });
 };
 
-export const getTestimonialByIdService = async (testimonialId: number): Promise<TTestimonialSelect | undefined> => {
+export const getTestimonialByIdService = async (id: number): Promise<TTestimonialSelect | undefined> => {
     return await db.query.testimonialsTable.findFirst({
-        where: eq(testimonialsTable.testimonialId, testimonialId)
+        where: eq(testimonialsTable.id, id)
     });
 };
 
@@ -19,12 +19,12 @@ export const createTestimonialService = async (data: TTestimonialInsert): Promis
     return 'Testimonial created successfully';
 };
 
-export const updateTestimonialService = async (testimonialId: number, data: TTestimonialInsert): Promise<string> => {
-    await db.update(testimonialsTable).set(data).where(eq(testimonialsTable.testimonialId, testimonialId));
+export const updateTestimonialService = async (id: number, data: TTestimonialInsert): Promise<string> => {
+    await db.update(testimonialsTable).set(data).where(eq(testimonialsTable.id, id));
     return 'Testimonial updated successfully';
 };
 
-export const deleteTestimonialService = async (testimonialId: number): Promise<string> => {
-    await db.delete(testimonialsTable).where(eq(testimonialsTable.testimonialId, testimonialId));
+export const deleteTestimonialService = async (id: number): Promise<string> => {
+    await db.delete(testimonialsTable).where(eq(testimonialsTable.id, id));
     return 'Testimonial deleted successfully';
 };

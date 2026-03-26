@@ -18,15 +18,15 @@ export const getAllTestimonials = async (_req: Request, res: Response) => {
     }
 };
 
-// GET /api/testimonials/:testimonialId
+// GET /api/testimonials/:id
 export const getTestimonialById = async (req: Request, res: Response) => {
-    const testimonialId = parseInt(req.params.testimonialId as string);
-    if (isNaN(testimonialId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid testimonial ID' });
         return;
     }
     try {
-        const testimonial = await getTestimonialByIdService(testimonialId);
+        const testimonial = await getTestimonialByIdService(id);
         if (!testimonial) {
             res.status(404).json({ error: 'Testimonial not found' });
             return;
@@ -54,10 +54,10 @@ export const createTestimonial = async (req: Request, res: Response) => {
     }
 };
 
-// PUT /api/testimonials/:testimonialId
+// PUT /api/testimonials/:id
 export const updateTestimonial = async (req: Request, res: Response) => {
-    const testimonialId = parseInt(req.params.testimonialId as string);
-    if (isNaN(testimonialId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid testimonial ID' });
         return;
     }
@@ -67,7 +67,7 @@ export const updateTestimonial = async (req: Request, res: Response) => {
         return;
     }
     try {
-        const result = await updateTestimonialService(testimonialId, { name, role, avatarUrl, message, rating, order });
+        const result = await updateTestimonialService(id, { name, role, avatarUrl, message, rating, order });
         res.status(200).json({ message: result });
     } catch (error) {
         const msg = error instanceof Error ? error.message : 'Internal Server Error';
@@ -75,15 +75,15 @@ export const updateTestimonial = async (req: Request, res: Response) => {
     }
 };
 
-// DELETE /api/testimonials/:testimonialId
+// DELETE /api/testimonials/:id
 export const deleteTestimonial = async (req: Request, res: Response) => {
-    const testimonialId = parseInt(req.params.testimonialId as string);
-    if (isNaN(testimonialId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid testimonial ID' });
         return;
     }
     try {
-        const result = await deleteTestimonialService(testimonialId);
+        const result = await deleteTestimonialService(id);
         res.status(200).json({ message: result });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Internal Server Error';
@@ -91,10 +91,10 @@ export const deleteTestimonial = async (req: Request, res: Response) => {
     }
 };
 
-// POST /api/testimonials/:testimonialId/avatar  — upload avatar via Cloudinary
+// POST /api/testimonials/:id/avatar  — upload avatar via Cloudinary
 export const uploadTestimonialAvatar = async (req: Request, res: Response) => {
-    const testimonialId = parseInt(req.params.testimonialId as string);
-    if (isNaN(testimonialId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid testimonial ID' });
         return;
     }
@@ -104,12 +104,12 @@ export const uploadTestimonialAvatar = async (req: Request, res: Response) => {
         return;
     }
     try {
-        const testimonial = await getTestimonialByIdService(testimonialId);
+        const testimonial = await getTestimonialByIdService(id);
         if (!testimonial) {
             res.status(404).json({ error: 'Testimonial not found' });
             return;
         }
-        const result = await updateTestimonialService(testimonialId, { ...testimonial, avatarUrl });
+        const result = await updateTestimonialService(id, { ...testimonial, avatarUrl });
         res.status(200).json({ message: result, avatarUrl });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Internal Server Error';

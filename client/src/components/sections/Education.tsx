@@ -1,4 +1,4 @@
-﻿import { motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { GraduationCap, BookOpen, Calendar } from 'lucide-react';
 import { fadeInLeft, fadeInUp } from '../../lib/animations';
@@ -7,7 +7,7 @@ import { Education as EducationType } from '../../types';
 
 const fallbackEducation: EducationType[] = [
   {
-    educationId: 1,
+    id: 1,
     institution: 'University of Eastern Africa, Baraton',
     degree: 'BSc. Software Engineering',
     description: 'Relevant coursework: Data Structures & Algorithms, Web & Distributed Systems, RESTful APIs, Cloud Computing, and Database Management.',
@@ -17,7 +17,7 @@ const fallbackEducation: EducationType[] = [
     order: 1,
   },
   {
-    educationId: 2,
+    id: 2,
     institution: 'Teach2Give',
     degree: 'Software Engineering Program',
     description: 'Intensive peer-to-peer bootcamp covering full-stack development with React, Node.js, TypeScript, PostgreSQL, DevOps, and agile methodologies.',
@@ -142,7 +142,9 @@ const Education = () => {
     queryFn: api.education.getAll,
   });
 
-  const educations = (educationData as EducationType[]) ?? fallbackEducation;
+  const educations = (educationData && (educationData as EducationType[]).length > 0)
+    ? (educationData as EducationType[])
+    : fallbackEducation;
 
   return (
     <section id="education" className="relative min-h-screen bg-white section-padding overflow-hidden">
@@ -194,7 +196,7 @@ const Education = () => {
 
           <div className="flex flex-col gap-12 md:gap-16">
             {educations.map((edu, i) => (
-              <TimelineEntry key={edu.educationId} edu={edu} index={i} />
+              <TimelineEntry key={edu.id} edu={edu} index={i} />
             ))}
           </div>
         </div>

@@ -2,7 +2,7 @@ import { pgTable, serial, text, timestamp, integer, boolean } from 'drizzle-orm/
 
 // --- ADMIN ---
 export const usersTable = pgTable('usersTable', {
-    userId: serial('userId').primaryKey(),
+    id: serial('id').primaryKey(),
     email: text('email').notNull().unique(),
     passwordHash: text('passwordHash').notNull(),
     createdAt: timestamp('createdAt').defaultNow(),
@@ -10,7 +10,7 @@ export const usersTable = pgTable('usersTable', {
 
 // --- PROJECTS ---
 export const projectsTable = pgTable('projectsTable', {
-    projectId: serial('projectId').primaryKey(),
+    id: serial('id').primaryKey(),
     title: text('title').notNull(),
     description: text('description').notNull(),
     techStack: text('techStack').array().notNull(),
@@ -24,28 +24,28 @@ export const projectsTable = pgTable('projectsTable', {
 
 // --- SKILLS ---
 export const skillsTable = pgTable('skillsTable', {
-    skillId: serial('skillId').primaryKey(),
+    id: serial('id').primaryKey(),
     name: text('name').notNull(),
     category: text('category').notNull(), // e.g. Frontend, Backend, DevOps
     iconUrl: text('iconUrl'),
     order: integer('order').default(0),
 });
 
-// --- EXPERIENCE ---
-export const experienceTable = pgTable('experienceTable', {
-    experienceId: serial('experienceId').primaryKey(),
-    company: text('company').notNull(),
-    role: text('role').notNull(),
-    location: text('location'),
-    startDate: text('startDate').notNull(),
-    endDate: text('endDate'),          // null means current job
-    bullets: text('bullets').array(),   // list of responsibilities
+// --- CERTIFICATIONS ---
+export const certificationsTable = pgTable('certificationsTable', {
+    id: serial('id').primaryKey(),
+    issuer: text('issuer').notNull(),
+    certificateName: text('certificateName').notNull(),
+    description: text('description'),
+    issueDate: text('issueDate').notNull(),
+    expiryDate: text('expiryDate'),           // null means no expiry
+    certificateUrl: text('certificateUrl'),    // link to certificate image or PDF
     order: integer('order').default(0),
 });
 
 // --- TESTIMONIALS ---
 export const testimonialsTable = pgTable('testimonialsTable', {
-    testimonialId: serial('testimonialId').primaryKey(),
+    id: serial('id').primaryKey(),
     name: text('name').notNull(),
     role: text('role').notNull(),
     avatarUrl: text('avatarUrl'),
@@ -56,7 +56,7 @@ export const testimonialsTable = pgTable('testimonialsTable', {
 
 // --- CONTACT MESSAGES ---
 export const contactMessagesTable = pgTable('contactMessagesTable', {
-    contactMessageId: serial('contactMessageId').primaryKey(),
+    id: serial('id').primaryKey(),
     name: text('name').notNull(),
     email: text('email').notNull(),
     message: text('message').notNull(),
@@ -66,7 +66,7 @@ export const contactMessagesTable = pgTable('contactMessagesTable', {
 
 // --- EDUCATION ---
 export const educationTable = pgTable('educationTable', {
-    educationId: serial('educationId').primaryKey(),
+    id: serial('id').primaryKey(),
     institution: text('institution').notNull(),
     degree: text('degree').notNull(),
     description: text('description'),
@@ -78,7 +78,7 @@ export const educationTable = pgTable('educationTable', {
 
 // --- COMMUNITY ---
 export const communityTable = pgTable('communityTable', {
-    communityId: serial('communityId').primaryKey(),
+    id: serial('id').primaryKey(),
     name: text('name').notNull(),
     role: text('role'),
     description: text('description'),
@@ -110,9 +110,9 @@ export type TProjectSelect = typeof projectsTable.$inferSelect;
 export type TSkillInsert = typeof skillsTable.$inferInsert;
 export type TSkillSelect = typeof skillsTable.$inferSelect;
 
-// 4. Experience
-export type TExperienceInsert = typeof experienceTable.$inferInsert;
-export type TExperienceSelect = typeof experienceTable.$inferSelect;
+// 4. Certifications
+export type TCertificationInsert = typeof certificationsTable.$inferInsert;
+export type TCertificationSelect = typeof certificationsTable.$inferSelect;
 
 // 5. Testimonials
 export type TTestimonialInsert = typeof testimonialsTable.$inferInsert;

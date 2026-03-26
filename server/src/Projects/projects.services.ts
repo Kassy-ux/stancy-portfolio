@@ -15,9 +15,9 @@ export const getFeaturedProjectsService = async (): Promise<TProjectSelect[]> =>
     });
 };
 
-export const getProjectByIdService = async (projectId: number): Promise<TProjectSelect | undefined> => {
+export const getProjectByIdService = async (id: number): Promise<TProjectSelect | undefined> => {
     return await db.query.projectsTable.findFirst({
-        where: eq(projectsTable.projectId, projectId)
+        where: eq(projectsTable.id, id)
     });
 };
 
@@ -26,20 +26,20 @@ export const createProjectService = async (data: TProjectInsert): Promise<string
     return 'Project created successfully';
 };
 
-export const updateProjectService = async (projectId: number, data: TProjectInsert): Promise<string> => {
-    await db.update(projectsTable).set(data).where(eq(projectsTable.projectId, projectId));
+export const updateProjectService = async (id: number, data: TProjectInsert): Promise<string> => {
+    await db.update(projectsTable).set(data).where(eq(projectsTable.id, id));
     return 'Project updated successfully';
 };
 
-export const deleteProjectService = async (projectId: number): Promise<string> => {
-    await db.delete(projectsTable).where(eq(projectsTable.projectId, projectId));
+export const deleteProjectService = async (id: number): Promise<string> => {
+    await db.delete(projectsTable).where(eq(projectsTable.id, id));
     return 'Project deleted successfully';
 };
 
-export const toggleFeaturedProjectService = async (projectId: number): Promise<{ message: string; featured: boolean }> => {
-    const project = await getProjectByIdService(projectId);
+export const toggleFeaturedProjectService = async (id: number): Promise<{ message: string; featured: boolean }> => {
+    const project = await getProjectByIdService(id);
     if (!project) throw new Error('Project not found');
     const newFeatured = !project.featured;
-    await db.update(projectsTable).set({ featured: newFeatured }).where(eq(projectsTable.projectId, projectId));
+    await db.update(projectsTable).set({ featured: newFeatured }).where(eq(projectsTable.id, id));
     return { message: `Project ${newFeatured ? 'marked as featured' : 'removed from featured'}`, featured: newFeatured };
 };

@@ -10,9 +10,9 @@ export const getAllContactMessagesService = async (): Promise<TContactMessageSel
 };
 
 // Get a single contact message by ID (admin)
-export const getContactMessageByIdService = async (contactMessageId: number): Promise<TContactMessageSelect | undefined> => {
+export const getContactMessageByIdService = async (id: number): Promise<TContactMessageSelect | undefined> => {
     return await db.query.contactMessagesTable.findFirst({
-        where: eq(contactMessagesTable.contactMessageId, contactMessageId)
+        where: eq(contactMessagesTable.id, id)
     });
 };
 
@@ -23,15 +23,15 @@ export const createContactMessageService = async (data: TContactMessageInsert): 
 };
 
 // Mark a contact message as read (admin)
-export const markContactMessageReadService = async (contactMessageId: number): Promise<string> => {
+export const markContactMessageReadService = async (id: number): Promise<string> => {
     await db.update(contactMessagesTable)
         .set({ read: true })
-        .where(eq(contactMessagesTable.contactMessageId, contactMessageId));
+        .where(eq(contactMessagesTable.id, id));
     return 'Message marked as read';
 };
 
 // Delete a contact message (admin)
-export const deleteContactMessageService = async (contactMessageId: number): Promise<string> => {
-    await db.delete(contactMessagesTable).where(eq(contactMessagesTable.contactMessageId, contactMessageId));
+export const deleteContactMessageService = async (id: number): Promise<string> => {
+    await db.delete(contactMessagesTable).where(eq(contactMessagesTable.id, id));
     return 'Message deleted successfully';
 };

@@ -41,14 +41,14 @@ export default function CommunityPanel() {
     try {
       setSaving(true);
       if (editing) {
-        await communityApi.update(editing.communityId, fromForm(form));
-        if (pendingLogoFile) { await communityApi.uploadLogo(editing.communityId, pendingLogoFile); setPendingLogoFile(null); }
+        await communityApi.update(editing.id, fromForm(form));
+        if (pendingLogoFile) { await communityApi.uploadLogo(editing.id, pendingLogoFile); setPendingLogoFile(null); }
       } else {
         await communityApi.create(fromForm(form));
         if (pendingLogoFile) {
           const all = await communityApi.getAll();
-          const newItem = [...all].filter(c => c.name === form.name).sort((a, b) => b.communityId - a.communityId)[0];
-          if (newItem) await communityApi.uploadLogo(newItem.communityId, pendingLogoFile);
+          const newItem = [...all].filter(c => c.name === form.name).sort((a, b) => b.id - a.id)[0];
+          if (newItem) await communityApi.uploadLogo(newItem.id, pendingLogoFile);
           setPendingLogoFile(null);
         }
       }
@@ -91,7 +91,7 @@ export default function CommunityPanel() {
       ) : (
         <div className="flex flex-col gap-3">
           {items.map(c => (
-            <div key={c.communityId} className="bg-white rounded-2xl border border-[#E6EAF4] shadow-sm p-5">
+            <div key={c.id} className="bg-white rounded-2xl border border-[#E6EAF4] shadow-sm p-5">
               <div className="flex items-start gap-4">
                 <button
                   className="relative w-12 h-12 rounded-xl bg-[#F4F6FF] border border-[#E6EAF4] flex items-center justify-center shrink-0 overflow-hidden group/logo"
@@ -117,17 +117,17 @@ export default function CommunityPanel() {
                   {c.bioUrl && <a href={c.bioUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs text-[#1A56FF] hover:underline mt-1"><ExternalLink size={11} />View Profile</a>}
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
-                  {uploadingId === c.communityId
+                  {uploadingId === c.id
                     ? <Loader2 size={14} className="text-[#1A56FF] animate-spin mx-2" />
-                    : <button onClick={() => triggerUpload(c.communityId)} className={BTN_GHOST} title="Upload logo"><ImageIcon size={14} /></button>
+                    : <button onClick={() => triggerUpload(c.id)} className={BTN_GHOST} title="Upload logo"><ImageIcon size={14} /></button>
                   }
                   <button onClick={() => openEdit(c)} className={BTN_GHOST}><Pencil size={15} /></button>
-                  {deleteId === c.communityId ? (
+                  {deleteId === c.id ? (
                     <div className="flex items-center gap-1">
-                      <button onClick={() => handleDelete(c.communityId)} className="px-2.5 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-semibold border border-red-100">Delete</button>
+                      <button onClick={() => handleDelete(c.id)} className="px-2.5 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-semibold border border-red-100">Delete</button>
                       <button onClick={() => setDeleteId(null)} className="px-2.5 py-1.5 text-[#8892A4] rounded-lg text-xs">Cancel</button>
                     </div>
-                  ) : <button onClick={() => setDeleteId(c.communityId)} className="p-2 text-[#8892A4] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={15} /></button>}
+                  ) : <button onClick={() => setDeleteId(c.id)} className="p-2 text-[#8892A4] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={15} /></button>}
                 </div>
               </div>
             </div>

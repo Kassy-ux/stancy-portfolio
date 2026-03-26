@@ -7,7 +7,7 @@ import cors from 'cors';
 import { UserRouter } from './User/user.routes';
 import { ProjectsRouter } from './Projects/projects.routes';
 import { SkillsRouter } from './Skills/skills.routes';
-import { ExperienceRouter } from './Experience/experience.routes';
+import { CertificationRouter } from './Certification/certification.routes';
 import { TestimonialsRouter } from './Testimonials/Testimonials.routes';
 import { ContactRouter } from './Contact/contact.routes';
 import { EducationRouter } from './Education/education.routes';
@@ -29,13 +29,13 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.use('/api', UserRouter);
-app.use('/api', ProjectsRouter);
-app.use('/api', SkillsRouter);
-app.use('/api', ExperienceRouter);
-app.use('/api', TestimonialsRouter);
-app.use('/api', ContactRouter);
-app.use('/api', EducationRouter);
-app.use('/api', CommunityRouter);
+app.use('/api/projects', ProjectsRouter);
+app.use('/api/skills', SkillsRouter);
+app.use('/api/certification', CertificationRouter);
+app.use('/api/testimonials', TestimonialsRouter);
+app.use('/api/contact', ContactRouter);
+app.use('/api/education', EducationRouter);
+app.use('/api/communities', CommunityRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

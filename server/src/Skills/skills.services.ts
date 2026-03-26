@@ -8,9 +8,9 @@ export const getAllSkillsService = async (): Promise<TSkillSelect[]> => {
     });
 };
 
-export const getSkillByIdService = async (skillId: number): Promise<TSkillSelect | undefined> => {
+export const getSkillByIdService = async (id: number): Promise<TSkillSelect | undefined> => {
     return await db.query.skillsTable.findFirst({
-        where: eq(skillsTable.skillId, skillId)
+        where: eq(skillsTable.id, id)
     });
 };
 
@@ -19,12 +19,12 @@ export const createSkillService = async (data: TSkillInsert): Promise<string> =>
     return 'Skill created successfully';
 };
 
-export const updateSkillService = async (skillId: number, data: TSkillInsert): Promise<string> => {
-    await db.update(skillsTable).set(data).where(eq(skillsTable.skillId, skillId));
+export const updateSkillService = async (id: number, data: TSkillInsert): Promise<string> => {
+    await db.update(skillsTable).set(data).where(eq(skillsTable.id, id));
     return 'Skill updated successfully';
 };
 
-export const deleteSkillService = async (skillId: number): Promise<string> => {
-    await db.delete(skillsTable).where(eq(skillsTable.skillId, skillId));
+export const deleteSkillService = async (id: number): Promise<string> => {
+    await db.delete(skillsTable).where(eq(skillsTable.id, id));
     return 'Skill deleted successfully';
 };

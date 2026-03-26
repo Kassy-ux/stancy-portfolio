@@ -42,14 +42,14 @@ export default function SkillsPanel() {
       setSaving(true);
       const payload = { name: form.name, category: form.category, iconUrl: form.iconUrl || undefined, order: Number(form.order) || 0 };
       if (editing) {
-        await skillsApi.update(editing.skillId, payload);
-        if (pendingIconFile) { await skillsApi.uploadIcon(editing.skillId, pendingIconFile); setPendingIconFile(null); }
+        await skillsApi.update(editing.id, payload);
+        if (pendingIconFile) { await skillsApi.uploadIcon(editing.id, pendingIconFile); setPendingIconFile(null); }
       } else {
         await skillsApi.create(payload);
         if (pendingIconFile) {
           const all = await skillsApi.getAll();
-          const newItem = [...all].filter(s => s.name === form.name).sort((a, b) => b.skillId - a.skillId)[0];
-          if (newItem) await skillsApi.uploadIcon(newItem.skillId, pendingIconFile);
+          const newItem = [...all].filter(s => s.name === form.name).sort((a, b) => b.id - a.id)[0];
+          if (newItem) await skillsApi.uploadIcon(newItem.id, pendingIconFile);
           setPendingIconFile(null);
         }
       }
@@ -104,7 +104,7 @@ export default function SkillsPanel() {
               </div>
               <div className="divide-y divide-[#F4F6FF]">
                 {skills.map(s => (
-                  <div key={s.skillId} className="flex items-center gap-4 px-5 py-3.5 hover:bg-[#F8F9FF] transition-colors">
+                  <div key={s.id} className="flex items-center gap-4 px-5 py-3.5 hover:bg-[#F8F9FF] transition-colors">
                     <button
                       className="relative w-9 h-9 rounded-xl bg-[#F4F6FF] border border-[#E6EAF4] flex items-center justify-center shrink-0 overflow-hidden group/ic"
                       onClick={() => s.iconUrl && setLightboxUrl(s.iconUrl)}
@@ -122,17 +122,17 @@ export default function SkillsPanel() {
                     </button>
                     <span className="flex-1 text-[#0A0A0F] font-medium text-sm">{s.name}</span>
                     <div className="flex items-center gap-1">
-                      {uploadingId === s.skillId
+                      {uploadingId === s.id
                         ? <Loader2 size={14} className="text-[#1A56FF] animate-spin mx-2" />
-                        : <button onClick={() => triggerUpload(s.skillId)} className={BTN_GHOST} title="Upload icon"><ImageIcon size={14} /></button>
+                        : <button onClick={() => triggerUpload(s.id)} className={BTN_GHOST} title="Upload icon"><ImageIcon size={14} /></button>
                       }
                       <button onClick={() => openEdit(s)} className={BTN_GHOST}><Pencil size={14} /></button>
-                      {deleteId === s.skillId ? (
+                      {deleteId === s.id ? (
                         <div className="flex items-center gap-1">
-                          <button onClick={() => handleDelete(s.skillId)} className="px-2.5 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-semibold hover:bg-red-100 transition-colors border border-red-100">Delete</button>
+                          <button onClick={() => handleDelete(s.id)} className="px-2.5 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-semibold hover:bg-red-100 transition-colors border border-red-100">Delete</button>
                           <button onClick={() => setDeleteId(null)} className="px-2.5 py-1.5 text-[#8892A4] hover:text-[#0A0A0F] rounded-lg text-xs transition-colors">Cancel</button>
                         </div>
-                      ) : <button onClick={() => setDeleteId(s.skillId)} className="p-2 text-[#8892A4] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} /></button>}
+                      ) : <button onClick={() => setDeleteId(s.id)} className="p-2 text-[#8892A4] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} /></button>}
                     </div>
                   </div>
                 ))}

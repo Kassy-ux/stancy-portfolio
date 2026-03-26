@@ -41,14 +41,14 @@ export default function EducationPanel() {
     try {
       setSaving(true);
       if (editing) {
-        await educationApi.update(editing.educationId, fromForm(form));
-        if (pendingLogoFile) { await educationApi.uploadLogo(editing.educationId, pendingLogoFile); setPendingLogoFile(null); }
+        await educationApi.update(editing.id, fromForm(form));
+        if (pendingLogoFile) { await educationApi.uploadLogo(editing.id, pendingLogoFile); setPendingLogoFile(null); }
       } else {
         await educationApi.create(fromForm(form));
         if (pendingLogoFile) {
           const all = await educationApi.getAll();
-          const newItem = [...all].filter(e => e.institution === form.institution).sort((a, b) => b.educationId - a.educationId)[0];
-          if (newItem) await educationApi.uploadLogo(newItem.educationId, pendingLogoFile);
+          const newItem = [...all].filter(e => e.institution === form.institution).sort((a, b) => b.id - a.id)[0];
+          if (newItem) await educationApi.uploadLogo(newItem.id, pendingLogoFile);
           setPendingLogoFile(null);
         }
       }
@@ -91,7 +91,7 @@ export default function EducationPanel() {
       ) : (
         <div className="flex flex-col gap-3">
           {items.map(e => (
-            <div key={e.educationId} className="bg-white rounded-2xl border border-[#E6EAF4] shadow-sm p-5">
+            <div key={e.id} className="bg-white rounded-2xl border border-[#E6EAF4] shadow-sm p-5">
               <div className="flex items-start gap-4">
                 <button
                   className="relative w-12 h-12 rounded-xl bg-[#F4F6FF] border border-[#E6EAF4] flex items-center justify-center shrink-0 overflow-hidden group/logo"
@@ -115,17 +115,17 @@ export default function EducationPanel() {
                   {e.description && <p className="text-sm text-[#8892A4] mt-2 line-clamp-2">{e.description}</p>}
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
-                  {uploadingId === e.educationId
+                  {uploadingId === e.id
                     ? <Loader2 size={14} className="text-[#1A56FF] animate-spin mx-2" />
-                    : <button onClick={() => triggerUpload(e.educationId)} className={BTN_GHOST} title="Upload logo"><ImageIcon size={14} /></button>
+                    : <button onClick={() => triggerUpload(e.id)} className={BTN_GHOST} title="Upload logo"><ImageIcon size={14} /></button>
                   }
                   <button onClick={() => openEdit(e)} className={BTN_GHOST}><Pencil size={15} /></button>
-                  {deleteId === e.educationId ? (
+                  {deleteId === e.id ? (
                     <div className="flex items-center gap-1">
-                      <button onClick={() => handleDelete(e.educationId)} className="px-2.5 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-semibold border border-red-100">Delete</button>
+                      <button onClick={() => handleDelete(e.id)} className="px-2.5 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-semibold border border-red-100">Delete</button>
                       <button onClick={() => setDeleteId(null)} className="px-2.5 py-1.5 text-[#8892A4] rounded-lg text-xs">Cancel</button>
                     </div>
-                  ) : <button onClick={() => setDeleteId(e.educationId)} className="p-2 text-[#8892A4] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={15} /></button>}
+                  ) : <button onClick={() => setDeleteId(e.id)} className="p-2 text-[#8892A4] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={15} /></button>}
                 </div>
               </div>
             </div>

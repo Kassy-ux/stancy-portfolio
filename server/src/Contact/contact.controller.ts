@@ -17,15 +17,15 @@ export const getAllContactMessages = async (req: Request, res: Response) => {
     }
 };
 
-// GET /api/contact/:contactMessageId
+// GET /api/contact/:id
 export const getContactMessageById = async (req: Request, res: Response) => {
-    const contactMessageId = parseInt(req.params.contactMessageId as string);
-    if (isNaN(contactMessageId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid contact message ID' });
         return;
     }
     try {
-        const messageData = await getContactMessageByIdService(contactMessageId);
+        const messageData = await getContactMessageByIdService(id);
         if (!messageData) {
             res.status(404).json({ error: 'Contact message not found' });
             return;
@@ -55,15 +55,15 @@ export const createContactMessage = async (req: Request, res: Response) => {
     }
 };
 
-// PATCH /api/contact/:contactMessageId/read
+// PATCH /api/contact/:id/read
 export const markContactMessageRead = async (req: Request, res: Response) => {
-    const contactMessageId = parseInt(req.params.contactMessageId as string);
-    if (isNaN(contactMessageId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid contact message ID' });
         return;
     }
     try {
-        const result = await markContactMessageReadService(contactMessageId);
+        const result = await markContactMessageReadService(id);
         res.status(200).json({ message: result });
     } catch (error) {
         console.error('Error marking message as read:', error);
@@ -72,15 +72,15 @@ export const markContactMessageRead = async (req: Request, res: Response) => {
     }
 };
 
-// DELETE /api/contact/:contactMessageId
+// DELETE /api/contact/:id
 export const deleteContactMessage = async (req: Request, res: Response) => {
-    const contactMessageId = parseInt(req.params.contactMessageId as string);
-    if (isNaN(contactMessageId)) {
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
         res.status(400).json({ error: 'Invalid contact message ID' });
         return;
     }
     try {
-        const result = await deleteContactMessageService(contactMessageId);
+        const result = await deleteContactMessageService(id);
         res.status(200).json({ message: result });
     } catch (error) {
         console.error('Error deleting contact message:', error);

@@ -8,9 +8,9 @@ export const getAllEducationService = async (): Promise<TEducationSelect[]> => {
     });
 };
 
-export const getEducationByIdService = async (educationId: number): Promise<TEducationSelect | undefined> => {
+export const getEducationByIdService = async (id: number): Promise<TEducationSelect | undefined> => {
     return await db.query.educationTable.findFirst({
-        where: eq(educationTable.educationId, educationId)
+        where: eq(educationTable.id, id)
     });
 };
 
@@ -19,12 +19,12 @@ export const createEducationService = async (data: TEducationInsert): Promise<st
     return 'Education entry created successfully';
 };
 
-export const updateEducationService = async (educationId: number, data: TEducationInsert): Promise<string> => {
-    await db.update(educationTable).set(data).where(eq(educationTable.educationId, educationId));
+export const updateEducationService = async (id: number, data: TEducationInsert): Promise<string> => {
+    await db.update(educationTable).set(data).where(eq(educationTable.id, id));
     return 'Education entry updated successfully';
 };
 
-export const deleteEducationService = async (educationId: number): Promise<string> => {
-    await db.delete(educationTable).where(eq(educationTable.educationId, educationId));
+export const deleteEducationService = async (id: number): Promise<string> => {
+    await db.delete(educationTable).where(eq(educationTable.id, id));
     return 'Education entry deleted successfully';
 };

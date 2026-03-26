@@ -1,5 +1,5 @@
 import { getToken, clearToken } from '../lib/auth';
-import type { Project, Skill, Experience, Education, Community, Testimonial } from '../types';
+import type { Project, Skill, Certification, Education, Community, Testimonial } from '../types';
 
 const BASE = import.meta.env.VITE_API_URL || '/api';
 
@@ -75,13 +75,12 @@ export const skillsApi = {
   uploadIcon: (id: number, f: File)       => aUpload(`/skills/${id}/icon`, 'icon', f)    as Promise<{ iconUrl: string }>,
 };
 
-// ── Experience ────────────────────────────────────────────────────────────────
-
-export const experienceApi = {
-  getAll:  ()                              => aGet('/experience')                 as Promise<Experience[]>,
-  create:  (d: Partial<Experience>)        => aPost('/experience', d)             as Promise<Experience>,
-  update:  (id: number, d: Partial<Experience>) => aPut(`/experience/${id}`, d)  as Promise<Experience>,
-  delete:  (id: number)                    => aDel(`/experience/${id}`),
+// ── Certification ─────────────────────────────────────────────────────────────
+export const certificationApi = {
+  getAll:  ()                                  => aGet('/certification')                 as Promise<Certification[]>,
+  create:  (d: Partial<Certification>)         => aPost('/certification', d)             as Promise<Certification>,
+  update:  (id: number, d: Partial<Certification>) => aPut(`/certification/${id}`, d)    as Promise<Certification>,
+  delete:  (id: number)                        => aDel(`/certification/${id}`),
 };
 
 // ── Education ─────────────────────────────────────────────────────────────────
@@ -117,7 +116,7 @@ export const testimonialsApi = {
 // ── Contact Messages ──────────────────────────────────────────────────────────
 
 export interface AdminContactMessage {
-  contactMessageId: number;
+  id: number;
   name: string;
   email: string;
   message: string;

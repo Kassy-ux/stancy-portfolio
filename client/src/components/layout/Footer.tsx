@@ -36,7 +36,7 @@ const Footer = () => {
             >
               <Terminal size={14} />
             </span>
-              Code<span className="text-[#1A56FF]">Sidney</span>
+              Code<span className="text-[#1A56FF]">Stancy</span>
             </h3>
             <p className="font-body text-white/50 text-sm leading-relaxed">
               Full Stack Developer based in Kenya.
@@ -123,7 +123,7 @@ const Footer = () => {
                         flex flex-col md:flex-row items-center
                         justify-between gap-4">
           <p className="font-body text-white/30 text-sm">
-            © {new Date().getFullYear()} Bensidney Githu Ndung'u.
+            © {new Date().getFullYear()} Stancy Ngereso.
             All rights reserved.
           </p>
           <p className="font-body text-white/30 text-sm flex items-center gap-1.5">

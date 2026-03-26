@@ -9,32 +9,32 @@ import { Testimonial } from '../../types';
 // ── Fallback static data ──
 const fallbackTestimonials: Testimonial[] = [
   {
-    testimonialId: 1,
+    id: 1,
     name: 'John Kamau',
     role: 'Senior Developer — Teach2Give',
     avatarUrl: null,
     message:
-      'Bensidney is one of the most dedicated developers I have worked with. His ability to pick up new technologies quickly and deliver clean, well-structured code is impressive.',
+      'Stancy is one of the most dedicated developers I have worked with. Her ability to pick up new technologies quickly and deliver clean, well-structured code is impressive.',
     rating: 5,
     order: 1,
   },
   {
-    testimonialId: 2,
+    id: 2,
     name: 'Sarah Wanjiru',
     role: 'Project Manager',
     avatarUrl: null,
     message:
-      'Working with Bensidney was a great experience. He communicates clearly, meets deadlines, and always goes the extra mile to ensure the product works perfectly.',
+      'Working with Stancy was a great experience. She communicates clearly, meets deadlines, and always goes the extra mile to ensure the product works perfectly.',
     rating: 5,
     order: 2,
   },
   {
-    testimonialId: 3,
+    id: 3,
     name: 'David Ochieng',
     role: 'Full Stack Engineer',
     avatarUrl: null,
     message:
-      'Ben has a strong understanding of both frontend and backend development. His TypeScript skills and attention to detail make him a valuable team member on any project.',
+      'Stancy has a strong understanding of both frontend and backend development. Her TypeScript skills and attention to detail make her a valuable team member on any project.',
     rating: 5,
     order: 3,
   },
@@ -138,7 +138,9 @@ const Testimonials = () => {
   });
 
   const testimonials =
-    (testimonialsData as Testimonial[]) ?? fallbackTestimonials;
+    (testimonialsData && (testimonialsData as Testimonial[]).length > 0)
+      ? (testimonialsData as Testimonial[])
+      : fallbackTestimonials;
 
   const prev = () =>
     setCurrent((i) => (i - 1 + testimonials.length) % testimonials.length);
@@ -180,7 +182,7 @@ const Testimonials = () => {
           className="hidden md:grid grid-cols-2 xl:grid-cols-3 gap-6"
         >
           {testimonials.map((t, i) => (
-            <TestimonialCard key={t.testimonialId} testimonial={t} index={i} />
+            <TestimonialCard key={t.id} testimonial={t} index={i} />
           ))}
         </motion.div>
 
@@ -194,10 +196,12 @@ const Testimonials = () => {
               exit={{ opacity: 0, x: -40 }}
               transition={{ duration: 0.3 }}
             >
-              <TestimonialCard
-                testimonial={testimonials[current]}
-                index={current}
-              />
+              {testimonials[current] && (
+                <TestimonialCard
+                  testimonial={testimonials[current]}
+                  index={current}
+                />
+              )}
             </motion.div>
           </AnimatePresence>
 

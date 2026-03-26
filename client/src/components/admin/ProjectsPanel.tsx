@@ -41,7 +41,7 @@ export default function ProjectsPanel() {
     const id = toast.loading(editing ? 'Saving changes...' : 'Creating project...');
     try {
       setSaving(true);
-      if (editing) await projectsApi.update(editing.projectId, fromForm(form));
+      if (editing) await projectsApi.update(editing.id, fromForm(form));
       else await projectsApi.create(fromForm(form));
       toast.success(editing ? 'Project updated' : 'Project created', { id });
       setModal(false); await load();
@@ -56,7 +56,7 @@ export default function ProjectsPanel() {
   };
 
   const handleToggle = async (p: Project) => {
-    try { await projectsApi.toggleFeatured(p.projectId); await load(); toast.success(p.featured ? 'Removed from featured' : 'Marked as featured'); }
+    try { await projectsApi.toggleFeatured(p.id); await load(); toast.success(p.featured ? 'Removed from featured' : 'Marked as featured'); }
     catch { toast.error('Failed to update'); }
   };
 
@@ -78,11 +78,11 @@ export default function ProjectsPanel() {
     const id = toast.loading('Uploading image...');
     try {
       setModalImgUploading(true);
-      await projectsApi.uploadImage(editing.projectId, file);
+      await projectsApi.uploadImage(editing.id, file);
       toast.success('Image uploaded', { id });
       const updated = await projectsApi.getAll();
       setItems(updated);
-      const fresh = updated.find(p => p.projectId === editing.projectId);
+      const fresh = updated.find(p => p.id === editing.id);
       if (fresh) setEditing(fresh);
     } catch { toast.error('Upload failed', { id }); }
     finally { setModalImgUploading(false); e.target.value = ''; }
@@ -118,7 +118,7 @@ export default function ProjectsPanel() {
               </thead>
               <tbody>
                 {items.map(p => (
-                  <tr key={p.projectId} className="border-b border-[#F4F6FF] hover:bg-[#F8F9FF] transition-colors last:border-0">
+                  <tr key={p.id} className="border-b border-[#F4F6FF] hover:bg-[#F8F9FF] transition-colors last:border-0">
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
                         <button
@@ -161,18 +161,18 @@ export default function ProjectsPanel() {
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-1">
-                        {uploadingId === p.projectId
+                        {uploadingId === p.id
                           ? <Loader2 size={14} className="text-[#1A56FF] animate-spin mx-2" />
-                          : <button onClick={() => triggerUpload(p.projectId)} className={BTN_GHOST} title="Upload / replace image"><ImageIcon size={15} /></button>
+                          : <button onClick={() => triggerUpload(p.id)} className={BTN_GHOST} title="Upload / replace image"><ImageIcon size={15} /></button>
                         }
                         <button onClick={() => openEdit(p)} className={BTN_GHOST}><Pencil size={15} /></button>
-                        {deleteId === p.projectId ? (
+                        {deleteId === p.id ? (
                           <div className="flex items-center gap-1">
-                            <button onClick={() => handleDelete(p.projectId)} className="px-2.5 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-semibold hover:bg-red-100 transition-colors border border-red-100">Delete</button>
+                            <button onClick={() => handleDelete(p.id)} className="px-2.5 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-semibold hover:bg-red-100 transition-colors border border-red-100">Delete</button>
                             <button onClick={() => setDeleteId(null)} className="px-2.5 py-1.5 text-[#8892A4] hover:text-[#0A0A0F] rounded-lg text-xs transition-colors">Cancel</button>
                           </div>
                         ) : (
-                          <button onClick={() => setDeleteId(p.projectId)} className="p-2 text-[#8892A4] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={15} /></button>
+                          <button onClick={() => setDeleteId(p.id)} className="p-2 text-[#8892A4] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={15} /></button>
                         )}
                       </div>
                     </td>

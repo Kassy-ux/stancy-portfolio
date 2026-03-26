@@ -43,7 +43,7 @@ Get a token by calling \`POST /api/auth/login\`.
                 Project: {
                     type: 'object',
                     properties: {
-                        projectId: { type: 'integer' },
+                        id: { type: 'integer' },
                         title: { type: 'string' },
                         description: { type: 'string' },
                         techStack: { type: 'array', items: { type: 'string' } },
@@ -73,7 +73,7 @@ Get a token by calling \`POST /api/auth/login\`.
                 Skill: {
                     type: 'object',
                     properties: {
-                        skillId: { type: 'integer' },
+                        id: { type: 'integer' },
                         name: { type: 'string' },
                         category: { type: 'string' },
                         iconUrl: { type: 'string', nullable: true },
@@ -121,7 +121,7 @@ Get a token by calling \`POST /api/auth/login\`.
                 Testimonial: {
                     type: 'object',
                     properties: {
-                        testimonialId: { type: 'integer' },
+                        id: { type: 'integer' },
                         name: { type: 'string' },
                         role: { type: 'string' },
                         avatarUrl: { type: 'string', nullable: true },
@@ -146,7 +146,7 @@ Get a token by calling \`POST /api/auth/login\`.
                 ContactMessage: {
                     type: 'object',
                     properties: {
-                        contactMessageId: { type: 'integer' },
+                        id: { type: 'integer' },
                         name: { type: 'string' },
                         email: { type: 'string', format: 'email' },
                         message: { type: 'string' },
@@ -167,7 +167,7 @@ Get a token by calling \`POST /api/auth/login\`.
                 Education: {
                     type: 'object',
                     properties: {
-                        educationId: { type: 'integer' },
+                        id: { type: 'integer' },
                         institution: { type: 'string' },
                         degree: { type: 'string' },
                         description: { type: 'string', nullable: true },
@@ -194,7 +194,7 @@ Get a token by calling \`POST /api/auth/login\`.
                 Community: {
                     type: 'object',
                     properties: {
-                        communityId: { type: 'integer' },
+                        id: { type: 'integer' },
                         name: { type: 'string' },
                         role: { type: 'string', nullable: true },
                         description: { type: 'string', nullable: true },

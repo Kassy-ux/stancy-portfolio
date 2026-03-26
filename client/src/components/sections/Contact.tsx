@@ -31,11 +31,11 @@ const Contact = () => {
   });
   const s = settingsData as Record<string, string> | undefined;
 
-  const email      = s?.email      || 'bensidneyndungu@gmail.com';
+  const email      = s?.email      || 'stancy ngereso4@gmail.com';
   const phone      = s?.phone      || '+254 798 696 008';
   const location   = s?.location   || 'Nairobi, Kenya';
-  const githubUrl  = s?.githubUrl  || 'https://github.com/bensidney';
-  const linkedinUrl = s?.linkedinUrl || 'https://linkedin.com/in/bensidney';
+  const githubUrl  = s?.githubUrl  || 'https://github.com/Kassy-ux';
+  const linkedinUrl = s?.linkedinUrl || 'https://linkedin.com/in/stancy-ngereso';
 
   const contactInfo = [
     { icon: Mail,   label: 'Email',    value: email,    href: `mailto:${email}`,                  color: 'bg-[#1A56FF]/10 text-[#1A56FF]'  },
@@ -234,7 +234,7 @@ const Contact = () => {
                 </label>
                 <input
                   {...register('name')}
-                  placeholder="Bensidney Ndung'u"
+                  placeholder="Stancy Ngereso"
                   className={`font-body text-sm px-4 py-3 rounded-xl
                              border bg-[#F4F6FF] outline-none
                              transition-all duration-200
@@ -288,7 +288,7 @@ const Contact = () => {
                 <textarea
                   {...register('message')}
                   rows={5}
-                  placeholder="Hi Bensidney, I'd love to work with you on..."
+                  placeholder="Hi Stancy, I'd love to work with you on..."
                   className={`font-body text-sm px-4 py-3 rounded-xl
                              border bg-[#F4F6FF] outline-none resize-none
                              transition-all duration-200
