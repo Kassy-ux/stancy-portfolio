@@ -1,4 +1,4 @@
-# CodeSidney — Full-Stack Developer Portfolio
+# CodeStancy — Full-Stack Developer Portfolio
 
 A production-ready personal portfolio with a CMS-style admin panel. All content — projects, skills, work experience, education, testimonials and site settings — is stored in a PostgreSQL database and editable through a protected admin UI without touching code.
 
