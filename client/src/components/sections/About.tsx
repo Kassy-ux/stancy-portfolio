@@ -49,7 +49,7 @@ const About = () => {
   const photoUrl  = s?.heroImageUrl || 'https://res.cloudinary.com/diia0dapa/image/upload/v1774165277/portfolio/hero/1774165274168-heroImage.png';
   const aboutBio  = s?.aboutBio    || null;
   const bio1 = aboutBio ?? 'Results-driven Full-Stack Software Engineer with 1+ years of experience building and deploying production-ready web applications using TypeScript, React, Next.js, Node.js, and PostgreSQL.';
-  const bio2 = 'Strong understanding of end-to-end application architecture, RESTful APIs, authentication, and role-based access control. Currently pursuing a BSc. in Software Engineering at the University of Eastern Africa, Baraton.';
+  const bio2 = 'Strong understanding of end-to-end application architecture, RESTful APIs, authentication, and role-based access control. Currently pursuing a computer science in  laikipia university.';
 
   return (
     <section id="about" className="min-h-screen bg-white section-padding">

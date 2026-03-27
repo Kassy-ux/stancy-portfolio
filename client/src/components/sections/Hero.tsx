@@ -66,7 +66,7 @@ const Hero = () => {
   const tagline  = s?.tagline  || 'Code that solves real problems — not just runs. Building scalable web applications from frontend to backend.';
   const photoUrl = s?.heroImageUrl || null;
   const githubUrl   = s?.githubUrl   || 'https://github.com/Kassy-ux';
-  const linkedinUrl = s?.linkedinUrl || 'https://linkedin.com/in/stancy-ngereso';
+  const linkedinUrl = s?.linkedinUrl || 'http://www.linkedin.com/in/stancy-ngereso';
   const emailVal    = s?.email       || 'stancy ngereso4@gmail.com';
 
   return (
