@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Trash2, Mail, Clock, Loader2, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from 'sonner';
 import { contactApi, type AdminContactMessage } from '../../services/adminApi';
@@ -19,10 +19,10 @@ export default function ContactPanel() {
   useEffect(() => { load(); }, []);
 
   const toggleExpand = async (msg: AdminContactMessage) => {
-    if (expanded === msg.contactMessageId) { setExpanded(null); return; }
-    setExpanded(msg.contactMessageId);
+    if (expanded === msg.id) { setExpanded(null); return; }
+    setExpanded(msg.id);
     if (!msg.read) {
-      try { await contactApi.markRead(msg.contactMessageId); setItems(p => p.map(m => m.contactMessageId === msg.contactMessageId ? { ...m, read: true } : m)); }
+      try { await contactApi.markRead(msg.id); setItems(p => p.map(m => m.id === msg.id ? { ...m, read: true } : m)); }
       catch { /* silent */ }
     }
   };
@@ -53,9 +53,9 @@ export default function ContactPanel() {
       ) : (
         <div className="flex flex-col gap-2">
           {items.map(msg => {
-            const isOpen = expanded === msg.contactMessageId;
+            const isOpen = expanded === msg.id;
             return (
-              <div key={msg.contactMessageId} className={`bg-white rounded-2xl border transition-colors ${isOpen ? 'border-[#1A56FF]/30 shadow-sm' : 'border-[#E6EAF4]'}`}>
+              <div key={msg.id} className={`bg-white rounded-2xl border transition-colors ${isOpen ? 'border-[#1A56FF]/30 shadow-sm' : 'border-[#E6EAF4]'}`}>
                 <div className="flex items-center gap-3 px-5 py-4 cursor-pointer" onClick={() => toggleExpand(msg)}>
                   <div className={`w-2 h-2 rounded-full shrink-0 ${msg.read ? 'bg-transparent' : 'bg-[#1A56FF]'}`} />
                   <div className="flex-1 min-w-0">
@@ -67,13 +67,13 @@ export default function ContactPanel() {
                     <p className={`text-xs truncate mt-0.5 ${msg.read ? 'text-[#C0C8D8]' : 'text-[#8892A4]'}`}>{msg.message}</p>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
-                    {deleteId === msg.contactMessageId ? (
+                    {deleteId === msg.id ? (
                       <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
-                        <button onClick={() => handleDelete(msg.contactMessageId)} className="px-2 py-1 bg-red-50 text-red-600 rounded-lg text-xs font-semibold border border-red-100">Del</button>
+                        <button onClick={() => handleDelete(msg.id)} className="px-2 py-1 bg-red-50 text-red-600 rounded-lg text-xs font-semibold border border-red-100">Del</button>
                         <button onClick={() => setDeleteId(null)} className="px-2 py-1 text-[#8892A4] rounded-lg text-xs">✕</button>
                       </div>
                     ) : (
-                      <button onClick={e => { e.stopPropagation(); setDeleteId(msg.contactMessageId); }} className="p-1.5 text-[#8892A4] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                      <button onClick={e => { e.stopPropagation(); setDeleteId(msg.id); }} className="p-1.5 text-[#8892A4] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
                         <Trash2 size={13} />
                       </button>
                     )}
