@@ -44,7 +44,7 @@ const TypingAnimation = () => {
   }, [displayed, deleting, currentIndex]);
 
   return (
-    <span className="text-[#FFD600]">
+    <span className="text-blue-500">
       {displayed}
       <span className="animate-pulse">|</span>
     </span>
@@ -73,18 +73,18 @@ const Hero = () => {
     <section
       id="hero"
       className="relative min-h-screen flex items-center overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, #1A56FF 0%, #0D2DB4 100%)' }}
+      style={{ background: 'linear-gradient(135deg, #0F1419 0%, #1E293B 50%, #1A1A2E 100%)' }}
     >
       {/* 3D Background */}
-      <div className="absolute inset-0 opacity-30">
+      <div className="absolute inset-0 opacity-20">
         <HeroBackground />
       </div>
 
       {/* Decorative blobs */}
-      <div className="absolute top-20 right-32 w-64 h-64 bg-[#FFD600]
+      <div className="absolute top-20 right-32 w-64 h-64 bg-blue-500
+                      rounded-full opacity-15 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-20 left-16 w-48 h-48 bg-cyan-400
                       rounded-full opacity-10 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-20 left-16 w-48 h-48 bg-white
-                      rounded-full opacity-5 blur-3xl pointer-events-none" />
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 lg:px-24
@@ -102,7 +102,7 @@ const Hero = () => {
               className="flex items-center gap-3 flex-wrap"
             >
               <span className="flex items-center gap-1.5 text-white/60 font-body text-sm">
-                <MapPin size={13} className="text-[#FFD600]" />
+                <MapPin size={13} className="text-blue-400" />
                 Kenya
               </span>
               <span className="w-px h-3.5 bg-white/20" />
@@ -127,7 +127,7 @@ const Hero = () => {
               <h1 className="font-heading font-extrabold text-white leading-tight"
                 style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)' }}>
                 Stancy<br />
-                <span className="text-[#FFD600]">Ngereso</span>
+                <span className="text-blue-500">Ngereso</span>
               </h1>
             </motion.div>
 
@@ -165,9 +165,9 @@ const Hero = () => {
                   document.getElementById('portfolio')
                     ?.scrollIntoView({ behavior: 'smooth' })
                 }
-                className="bg-[#FFD600] text-[#0A0A0F] font-body font-semibold
-                           px-8 py-3.5 rounded-full hover:bg-yellow-400
-                           transition-colors shadow-lg"
+                className="bg-blue-500 text-white font-body font-semibold
+                           px-8 py-3.5 rounded-full hover:bg-blue-600
+                           transition-colors shadow-lg shadow-blue-500/30"
               >
                 View Projects
               </motion.button>
@@ -180,8 +180,8 @@ const Hero = () => {
                     ?.scrollIntoView({ behavior: 'smooth' })
                 }
                 className="bg-transparent text-white font-body font-semibold
-                           px-8 py-3.5 rounded-full border-2 border-white/40
-                           hover:border-white hover:bg-white/10
+                           px-8 py-3.5 rounded-full border-2 border-white/30
+                           hover:border-blue-400 hover:bg-blue-500/10
                            transition-all"
               >
                 Contact Me
@@ -208,8 +208,8 @@ const Hero = () => {
                   whileHover={{ scale: 1.2, y: -3 }}
                   className="w-10 h-10 rounded-full bg-white/10
                              border border-white/20 flex items-center
-                             justify-center text-white hover:bg-white/20
-                             transition-colors"
+                             justify-center text-white hover:bg-blue-500/20
+                             hover:border-blue-400 transition-colors"
                   aria-label={label}
                 >
                   <Icon size={18} />
@@ -238,7 +238,7 @@ const Hero = () => {
                   ? <img src={photoUrl} alt="Profile"
                       className="w-auto h-[420px] md:h-[500px] max-w-none"
                     />
-                  : <div className="w-64 h-[420px] md:h-[500px] bg-white/10 flex items-center justify-center">
+                  : <div className="w-64 h-[420px] md:h-[500px] bg-white/10 flex items-center justify-center rounded-lg border border-white/20">
                       <span className="text-white/40 font-heading text-lg">Your Photo</span>
                     </div>
                 }
@@ -247,15 +247,15 @@ const Hero = () => {
                 <motion.div
                   animate={{ y: [0, -7, 0] }}
                   transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut', delay: 0.3 }}
-                  className="absolute -left-14 top-10 bg-white rounded-2xl
-                             px-3.5 py-2.5 shadow-xl flex items-center gap-3"
+                  className="absolute -left-14 top-10 bg-slate-900/80 backdrop-blur rounded-2xl
+                             px-3.5 py-2.5 shadow-xl flex items-center gap-3 border border-blue-500/20"
                 >
-                  <div className="w-9 h-9 bg-[#1A56FF]/10 rounded-xl flex items-center justify-center shrink-0">
-                    <Briefcase size={16} className="text-[#1A56FF]" />
+                  <div className="w-9 h-9 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0">
+                    <Briefcase size={16} className="text-blue-400" />
                   </div>
                   <div>
-                    <p className="font-heading font-bold text-[#0A0A0F] text-sm leading-none">1+</p>
-                    <p className="font-body text-[#8892A4] text-xs mt-0.5">Years Exp.</p>
+                    <p className="font-heading font-bold text-white text-sm leading-none">1+</p>
+                    <p className="font-body text-gray-400 text-xs mt-0.5">Years Exp.</p>
                   </div>
                 </motion.div>
 
@@ -263,15 +263,15 @@ const Hero = () => {
                 <motion.div
                   animate={{ y: [0, 7, 0] }}
                   transition={{ repeat: Infinity, duration: 3.8, ease: 'easeInOut', delay: 0.8 }}
-                  className="absolute -right-14 bottom-16 bg-white rounded-2xl
-                             px-3.5 py-2.5 shadow-xl flex items-center gap-3"
+                  className="absolute -right-14 bottom-16 bg-slate-900/80 backdrop-blur rounded-2xl
+                             px-3.5 py-2.5 shadow-xl flex items-center gap-3 border border-blue-500/20"
                 >
-                  <div className="w-9 h-9 bg-[#FFD600]/15 rounded-xl flex items-center justify-center shrink-0">
-                    <Code2 size={16} className="text-[#FFD600]" />
+                  <div className="w-9 h-9 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0">
+                    <Code2 size={16} className="text-blue-400" />
                   </div>
                   <div>
-                    <p className="font-heading font-bold text-[#0A0A0F] text-sm leading-none">5+</p>
-                    <p className="font-body text-[#8892A4] text-xs mt-0.5">Projects</p>
+                    <p className="font-heading font-bold text-white text-sm leading-none">5+</p>
+                    <p className="font-body text-gray-400 text-xs mt-0.5">Projects</p>
                   </div>
                 </motion.div>
 
@@ -279,7 +279,7 @@ const Hero = () => {
                 <motion.div
                   animate={{ scale: [1, 1.4, 1], opacity: [0.6, 1, 0.6] }}
                   transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
-                  className="absolute -top-3 -right-3 w-5 h-5 rounded-full bg-[#FFD600] shadow-lg shadow-[#FFD600]/50"
+                  className="absolute -top-3 -right-3 w-5 h-5 rounded-full bg-blue-500 shadow-lg shadow-blue-500/50"
                 />
               </motion.div>
             </motion.div>
