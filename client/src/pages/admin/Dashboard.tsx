@@ -53,26 +53,26 @@ type SidebarProps = {
 const SidebarContent = ({ mobile = false, collapsed, active, onCollapse, onClose, onSelect, onLogout }: SidebarProps) => (
   <div className="flex flex-col h-full">
     {/* Logo */}
-    <div className={`flex items-center gap-3 border-b border-[#E6EAF4] min-h-[64px] ${mobile ? 'px-5' : collapsed ? 'px-4 justify-center' : 'px-5'}`}>
-      <div className="w-9 h-9 bg-[#1A56FF] rounded-xl flex items-center justify-center shrink-0">
+    <div className={`flex items-center gap-3 border-b border-slate-200 dark:border-slate-700 min-h-[64px] ${mobile ? 'px-5' : collapsed ? 'px-4 justify-center' : 'px-5'}`}>
+      <div className="w-9 h-9 bg-blue-500 rounded-xl flex items-center justify-center shrink-0">
         <Terminal size={18} className="text-white" />
       </div>
       {(!collapsed || mobile) && (
         <div className="flex-1 min-w-0">
-          <p className="text-[#0A0A0F] font-bold text-sm leading-none truncate tracking-tight">CodeSidney</p>
-          <p className="text-[#8892A4] text-[11px] mt-0.5">Admin Panel</p>
+          <p className="text-slate-900 dark:text-white font-bold text-sm leading-none truncate tracking-tight">Stancy</p>
+          <p className="text-slate-500 dark:text-slate-400 text-[11px] mt-0.5">Admin Panel</p>
         </div>
       )}
       {!mobile && (
         <button
           onClick={onCollapse}
-          className="text-[#8892A4] hover:text-[#0A0A0F] transition-colors shrink-0 ml-auto p-1 rounded-lg hover:bg-[#F4F6FF]"
+          className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors shrink-0 ml-auto p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
         >
           <ChevronRight size={14} className={`transition-transform duration-200 ${collapsed ? '' : 'rotate-180'}`} />
         </button>
       )}
       {mobile && (
-        <button onClick={onClose} className="ml-auto p-1.5 rounded-lg text-[#8892A4] hover:text-[#0A0A0F] hover:bg-[#F4F6FF]">
+        <button onClick={onClose} className="ml-auto p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700">
           <X size={18} />
         </button>
       )}
@@ -88,8 +88,8 @@ const SidebarContent = ({ mobile = false, collapsed, active, onCollapse, onClose
           className={`w-full flex items-center gap-3 rounded-xl text-left transition-all duration-150 font-medium text-sm
             ${(!mobile && collapsed) ? 'px-3 py-2.5 justify-center' : 'px-3.5 py-2.5'}
             ${active === id
-              ? 'bg-[#1A56FF] text-white shadow-sm shadow-[#1A56FF]/20'
-              : 'text-[#8892A4] hover:text-[#0A0A0F] hover:bg-[#F4F6FF]'
+              ? 'bg-blue-500 text-white shadow-sm shadow-blue-500/20'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
         >
           <Icon size={16} className="shrink-0" />
@@ -99,11 +99,11 @@ const SidebarContent = ({ mobile = false, collapsed, active, onCollapse, onClose
     </nav>
 
     {/* Bottom */}
-    <div className="p-3 border-t border-[#E6EAF4] flex flex-col gap-0.5">
+    <div className="p-3 border-t border-slate-200 dark:border-slate-700 flex flex-col gap-0.5">
       <a
         href="/"
         title={(!mobile && collapsed) ? 'Portfolio' : undefined}
-        className={`flex items-center gap-3 rounded-xl transition-colors text-sm font-medium text-[#8892A4] hover:text-[#0A0A0F] hover:bg-[#F4F6FF]
+        className={`flex items-center gap-3 rounded-xl transition-colors text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700
           ${(!mobile && collapsed) ? 'px-3 py-2.5 justify-center' : 'px-3.5 py-2.5'}`}
       >
         <ChevronRight size={16} className="shrink-0 rotate-180" />
@@ -112,7 +112,7 @@ const SidebarContent = ({ mobile = false, collapsed, active, onCollapse, onClose
       <button
         onClick={onLogout}
         title={(!mobile && collapsed) ? 'Logout' : undefined}
-        className={`flex items-center gap-3 rounded-xl transition-colors text-sm font-medium text-[#8892A4] hover:text-red-500 hover:bg-red-50
+        className={`flex items-center gap-3 rounded-xl transition-colors text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10
           ${(!mobile && collapsed) ? 'px-3 py-2.5 justify-center' : 'px-3.5 py-2.5'}`}
       >
         <LogOut size={16} className="shrink-0" />
@@ -128,7 +128,7 @@ export default function AdminDashboard() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  useAdminHead(`${sectionTitles[active]} — Admin | CodeStancy`);
+  useAdminHead(`${sectionTitles[active]} — Admin | Stancy Portfolio`);
 
   useEffect(() => {
     if (!isAuthenticated()) navigate({ to: '/admin/login' });
@@ -151,7 +151,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F6FF] flex">
+    <div className="min-h-screen bg-white dark:bg-slate-950 flex">
 
       {/* ── Mobile overlay ── */}
       {mobileOpen && (
@@ -163,7 +163,7 @@ export default function AdminDashboard() {
 
       {/* ── Mobile drawer ── */}
       <aside
-        className={`fixed top-0 left-0 h-full w-64 bg-white border-r border-[#E6EAF4] z-50 shadow-xl transition-transform duration-200 lg:hidden
+        className={`fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 z-50 shadow-xl transition-transform duration-200 lg:hidden
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <SidebarContent mobile collapsed={collapsed} active={active} onCollapse={() => setCollapsed(p => !p)} onClose={() => setMobileOpen(false)} onSelect={selectSection} onLogout={handleLogout} />
@@ -171,7 +171,7 @@ export default function AdminDashboard() {
 
       {/* ── Desktop sidebar ── */}
       <aside
-        className={`hidden lg:flex flex-col sticky top-0 h-screen bg-white border-r border-[#E6EAF4] shadow-sm transition-all duration-200 shrink-0`}
+        className={`hidden lg:flex flex-col sticky top-0 h-screen bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 shadow-sm transition-all duration-200 shrink-0`}
         style={{ width: collapsed ? '64px' : '220px' }}
       >
         <SidebarContent collapsed={collapsed} active={active} onCollapse={() => setCollapsed(p => !p)} onClose={() => setMobileOpen(false)} onSelect={selectSection} onLogout={handleLogout} />
@@ -180,16 +180,16 @@ export default function AdminDashboard() {
       {/* ── Main ── */}
       <main className="flex-1 min-w-0 flex flex-col">
         {/* Top bar */}
-        <header className="sticky top-0 z-30 bg-white border-b border-[#E6EAF4] px-4 sm:px-6 h-16 flex items-center gap-4 shadow-sm">
+        <header className="sticky top-0 z-30 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 px-4 sm:px-6 h-16 flex items-center gap-4 shadow-sm">
           <button
             onClick={() => setMobileOpen(true)}
-            className="lg:hidden p-2 rounded-xl text-[#8892A4] hover:text-[#0A0A0F] hover:bg-[#F4F6FF] transition-colors"
+            className="lg:hidden p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
           >
             <Menu size={20} />
           </button>
           <div>
-            <h1 className="text-[#0A0A0F] font-bold text-lg leading-none">{sectionTitles[active]}</h1>
-            <p className="text-[#8892A4] text-xs mt-0.5">Manage your content</p>
+            <h1 className="text-slate-900 dark:text-white font-bold text-lg leading-none">{sectionTitles[active]}</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">Manage your content</p>
           </div>
         </header>
 
