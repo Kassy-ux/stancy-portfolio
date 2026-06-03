@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { Github, Linkedin, Mail, ArrowDown, Briefcase, Code2, MapPin } from 'lucide-react';
-import HeroBackground from '../three/HeroBackground';
 import { api } from '../../services/api';
+
+const HeroBackground = lazy(() => import('../three/HeroBackground'));
 
 const TYPED_STRINGS = [
   'Full Stack Developer',
@@ -11,6 +12,23 @@ const TYPED_STRINGS = [
   'TypeScript Enthusiast',
   'Problem Solver',
 ];
+
+const DEFAULT_PROFILE_IMAGE_URL =
+  'https://res.cloudinary.com/diia0dapa/image/upload/v1774165277/portfolio/hero/1774165274168-heroImage.png';
+
+const HeroBackgroundFallback = () => (
+  <div
+    className="absolute inset-0"
+    style={{
+      backgroundImage: `
+        linear-gradient(to right, rgba(255,255,255,0.14) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.10) 1px, transparent 1px)
+      `,
+      backgroundSize: '72px 72px',
+      maskImage: 'linear-gradient(to bottom, transparent, black 18%, black 82%, transparent)',
+    }}
+  />
+);
 
 const TypingAnimation = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -64,10 +82,10 @@ const Hero = () => {
 
   const s = settings as Record<string, string> | undefined;
   const tagline  = s?.tagline  || 'Code that solves real problems — not just runs. Building scalable web applications from frontend to backend.';
-  const photoUrl = s?.heroImageUrl || null;
+  const photoUrl = s?.heroImageUrl || DEFAULT_PROFILE_IMAGE_URL;
   const githubUrl   = s?.githubUrl   || 'https://github.com/Kassy-ux';
-  const linkedinUrl = s?.linkedinUrl || 'http://www.linkedin.com/in/stancy-ngereso';
-  const emailVal    = s?.email       || 'stancy ngereso4@gmail.com';
+  const linkedinUrl = s?.linkedinUrl || 'https://www.linkedin.com/in/stancy-ngereso';
+  const emailVal    = s?.email       || 'stancyngereso4@gmail.com';
 
   return (
     <section
@@ -76,15 +94,23 @@ const Hero = () => {
       style={{ background: 'linear-gradient(135deg, #0F1419 0%, #1E293B 50%, #1A1A2E 100%)' }}
     >
       {/* 3D Background */}
-      <div className="absolute inset-0 opacity-20">
-        <HeroBackground />
+      <div className="absolute inset-0 opacity-30">
+        <Suspense fallback={<HeroBackgroundFallback />}>
+          <HeroBackground />
+        </Suspense>
       </div>
 
-      {/* Decorative blobs */}
-      <div className="absolute top-20 right-32 w-64 h-64 bg-blue-500
-                      rounded-full opacity-15 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-20 left-16 w-48 h-48 bg-cyan-400
-                      rounded-full opacity-10 blur-3xl pointer-events-none" />
+      {/* Technical grid overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-30"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, rgba(255,255,255,0.12) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px)
+          `,
+          backgroundSize: '96px 96px',
+        }}
+      />
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 lg:px-24
@@ -234,23 +260,20 @@ const Hero = () => {
                 className="relative"
               >
                 {/* Photo */}
-                {photoUrl
-                  ? <img src={photoUrl} alt="Profile"
-                      className="w-auto h-[420px] md:h-[500px] max-w-none"
-                    />
-                  : <div className="w-64 h-[420px] md:h-[500px] bg-white/10 flex items-center justify-center rounded-lg border border-white/20">
-                      <span className="text-white/40 font-heading text-lg">Your Photo</span>
-                    </div>
-                }
+                <img
+                  src={photoUrl}
+                  alt="Stancy Ngereso"
+                  className="w-auto h-[360px] max-w-[78vw] object-contain md:h-[500px] md:max-w-none"
+                />
 
                 {/* Floating card — Experience */}
                 <motion.div
                   animate={{ y: [0, -7, 0] }}
                   transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut', delay: 0.3 }}
-                  className="absolute -left-14 top-10 bg-slate-900/80 backdrop-blur rounded-2xl
+                  className="absolute left-2 top-8 bg-slate-900/80 backdrop-blur rounded-lg sm:-left-14 sm:top-10
                              px-3.5 py-2.5 shadow-xl flex items-center gap-3 border border-blue-500/20"
                 >
-                  <div className="w-9 h-9 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 bg-blue-500/20 rounded-md flex items-center justify-center shrink-0">
                     <Briefcase size={16} className="text-blue-400" />
                   </div>
                   <div>
@@ -263,10 +286,10 @@ const Hero = () => {
                 <motion.div
                   animate={{ y: [0, 7, 0] }}
                   transition={{ repeat: Infinity, duration: 3.8, ease: 'easeInOut', delay: 0.8 }}
-                  className="absolute -right-14 bottom-16 bg-slate-900/80 backdrop-blur rounded-2xl
+                  className="absolute right-2 bottom-12 bg-slate-900/80 backdrop-blur rounded-lg sm:-right-14 sm:bottom-16
                              px-3.5 py-2.5 shadow-xl flex items-center gap-3 border border-blue-500/20"
                 >
-                  <div className="w-9 h-9 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 bg-blue-500/20 rounded-md flex items-center justify-center shrink-0">
                     <Code2 size={16} className="text-blue-400" />
                   </div>
                   <div>
@@ -274,13 +297,6 @@ const Hero = () => {
                     <p className="font-body text-gray-400 text-xs mt-0.5">Projects</p>
                   </div>
                 </motion.div>
-
-                {/* Small accent dot top-right */}
-                <motion.div
-                  animate={{ scale: [1, 1.4, 1], opacity: [0.6, 1, 0.6] }}
-                  transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
-                  className="absolute -top-3 -right-3 w-5 h-5 rounded-full bg-blue-500 shadow-lg shadow-blue-500/50"
-                />
               </motion.div>
             </motion.div>
           </div>

@@ -31,7 +31,7 @@ const Contact = () => {
   });
   const s = settingsData as Record<string, string> | undefined;
 
-  const email      = s?.email      || 'stancy ngereso4@gmail.com';
+  const email      = s?.email      || 'stancyngereso4@gmail.com';
   const phone      = s?.phone      || '+254 798 696 008';
   const location   = s?.location   || 'Nairobi, Kenya';
   const githubUrl  = s?.githubUrl  || 'https://github.com/Kassy-ux';

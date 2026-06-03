@@ -21,12 +21,16 @@ app.use(cors({ origin: process.env.CLIENT_URL }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/health', (_req, res) => {
+  res.status(200).json({
+    ok: true,
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // Swagger docs — available at /api/docs
 setupSwagger(app);
-
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'Server is running' });
-});
 
 app.use('/api', UserRouter);
 app.use('/api/projects', ProjectsRouter);

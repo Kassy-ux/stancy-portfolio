@@ -29,14 +29,16 @@ const Footer = () => {
             viewport={{ once: true }}
             className="flex flex-col gap-4"
           >
-            <h3 className="font-heading font-bold text-2xl">
-                            <span
-              className={`flex items-center justify-center w-8 h-8 rounded-lg text-white text-xs font-bold
-                bg-gradient-to-br from-[#1A56FF] to-[#0D2DB4] shadow-md`}
-            >
-              <Terminal size={14} />
-            </span>
-              Code<span className="text-[#1A56FF]">Stancy</span>
+            <h3 className="font-heading font-bold text-2xl flex items-center gap-2">
+              <span
+                className="flex items-center justify-center w-8 h-8 rounded-lg text-white text-xs font-bold
+                           bg-gradient-to-br from-[#1A56FF] to-[#0D2DB4] shadow-md"
+              >
+                <Terminal size={14} />
+              </span>
+              <span>
+                Code<span className="text-[#1A56FF]">Stancy</span>
+              </span>
             </h3>
             <p className="font-body text-white/50 text-sm leading-relaxed">
               Full Stack Developer based in Kenya.

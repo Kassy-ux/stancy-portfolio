@@ -39,9 +39,16 @@ const AdminLogin = () => {
       className="min-h-screen flex"
       style={{ background: 'linear-gradient(135deg, #0F1419 0%, #1E293B 50%, #1A1A2E 100%)' }}
     >
-      {/* Decorative blobs */}
-      <div className="absolute top-10 right-20 w-72 h-72 bg-blue-500 rounded-full opacity-15 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 left-10 w-56 h-56 bg-cyan-400 rounded-full opacity-10 blur-3xl pointer-events-none" />
+      <div
+        className="absolute inset-0 pointer-events-none opacity-25"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, rgba(255,255,255,0.16) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255,255,255,0.10) 1px, transparent 1px)
+          `,
+          backgroundSize: '72px 72px',
+        }}
+      />
 
       {/* Left panel — branding (hidden on small screens) */}
       <div className="hidden lg:flex flex-col justify-between w-1/2 p-14 relative">
