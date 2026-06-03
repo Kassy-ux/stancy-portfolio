@@ -61,7 +61,7 @@ const Skills = () => {
   const activeSkills = grouped[active] ?? [];
 
   return (
-    <section id="skills" className="min-h-screen bg-white section-padding">
+    <section id="skills" className="min-h-screen portfolio-dark-section section-padding">
       <div className="max-w-4xl mx-auto">
 
         {/* Heading */}

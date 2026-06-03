@@ -72,7 +72,7 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="min-h-screen bg-[#F4F6FF] section-padding">
+    <section id="contact" className="min-h-screen portfolio-dark-section section-padding">
       <div className="max-w-7xl mx-auto">
 
         {/* Section Heading */}

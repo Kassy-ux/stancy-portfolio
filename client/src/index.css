@@ -171,3 +171,55 @@
 .animate-fadeIn {
     animation: fadeIn 0.5s ease-out both;
 }
+
+.portfolio-dark-section {
+    color: #F8FAFC;
+    background:
+        linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.045) 1px, transparent 1px),
+        linear-gradient(135deg, #0F1419 0%, #172033 48%, #101827 100%) !important;
+    background-size: 96px 96px, 96px 96px, auto;
+}
+
+.portfolio-dark-section .section-heading,
+.portfolio-dark-section .text-\[\#0A0A0F\] {
+    color: #F8FAFC !important;
+}
+
+.portfolio-dark-section .text-\[\#8892A4\] {
+    color: #CBD5E1 !important;
+}
+
+.portfolio-dark-section .bg-white {
+    background-color: rgba(15, 23, 42, 0.78) !important;
+    backdrop-filter: blur(14px);
+}
+
+.portfolio-dark-section .bg-\[\#F4F6FF\],
+.portfolio-dark-section .bg-white\/70,
+.portfolio-dark-section .bg-white\/80 {
+    background-color: rgba(30, 41, 59, 0.82) !important;
+}
+
+.portfolio-dark-section .border-gray-50,
+.portfolio-dark-section .border-gray-100,
+.portfolio-dark-section .border-gray-200 {
+    border-color: rgba(96, 165, 250, 0.22) !important;
+}
+
+.portfolio-dark-section input,
+.portfolio-dark-section textarea {
+    color: #F8FAFC !important;
+    background-color: rgba(15, 23, 42, 0.78) !important;
+    border-color: rgba(96, 165, 250, 0.22) !important;
+}
+
+.portfolio-dark-section input:focus,
+.portfolio-dark-section textarea:focus {
+    background-color: rgba(15, 23, 42, 0.95) !important;
+}
+
+.portfolio-dark-section input::placeholder,
+.portfolio-dark-section textarea::placeholder {
+    color: rgba(203, 213, 225, 0.55);
+}

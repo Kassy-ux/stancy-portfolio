@@ -211,7 +211,7 @@ const Community = () => {
     : fallbackCommunity;
 
   return (
-    <section id="community" className="relative min-h-screen bg-[#F4F6FF] section-padding overflow-hidden">
+    <section id="community" className="relative min-h-screen portfolio-dark-section section-padding overflow-hidden">
 
       {/* Dot background */}
       <div className="absolute inset-0 pointer-events-none"
@@ -220,7 +220,7 @@ const Community = () => {
              backgroundSize: '28px 28px',
            }} />
       <div className="absolute inset-0 pointer-events-none"
-           style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 40%, transparent 50%, #F4F6FF 100%)' }} />
+           style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 40%, transparent 45%, rgba(15,20,25,0.74) 100%)' }} />
 
       <div className="relative max-w-7xl mx-auto">
 

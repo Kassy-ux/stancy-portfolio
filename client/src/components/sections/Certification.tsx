@@ -39,7 +39,7 @@ const Certification = () => {
   const certifications = (certificationData as TCertification[]) ?? fallbackCertifications;
 
   return (
-    <section id="certification" className="relative min-h-screen bg-[#F4F6FF] section-padding overflow-hidden">
+    <section id="certification" className="relative min-h-screen portfolio-dark-section section-padding overflow-hidden">
       {/* Background patterns */}
       <div
         className="absolute inset-0 pointer-events-none"

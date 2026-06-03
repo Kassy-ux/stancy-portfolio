@@ -148,7 +148,7 @@ const Testimonials = () => {
     setCurrent((i) => (i + 1) % testimonials.length);
 
   return (
-    <section id="testimonials" className="min-h-screen bg-white section-padding">
+    <section id="testimonials" className="min-h-screen portfolio-dark-section section-padding">
       <div className="max-w-7xl mx-auto">
 
         {/* Section Heading */}

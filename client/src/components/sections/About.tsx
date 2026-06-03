@@ -52,7 +52,7 @@ const About = () => {
   const bio2 = 'Strong understanding of end-to-end application architecture, RESTful APIs, authentication, and role-based access control. Currently pursuing a computer science in  laikipia university.';
 
   return (
-    <section id="about" className="min-h-screen bg-white section-padding">
+    <section id="about" className="min-h-screen portfolio-dark-section section-padding">
       <div className="max-w-7xl mx-auto">
 
         {/* Section Heading */}

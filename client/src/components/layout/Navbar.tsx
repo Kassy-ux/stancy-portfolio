@@ -40,7 +40,7 @@ const Navbar = () => {
         transition={{ duration: 0.7, ease: 'easeOut' }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500
           ${scrolled
-            ? 'bg-white/95 backdrop-blur-xl shadow-sm border-b border-black/5'
+            ? 'bg-[#0F1419]/88 backdrop-blur-xl shadow-lg shadow-black/20 border-b border-blue-500/10'
             : 'bg-transparent'
           }`}
       >
@@ -59,9 +59,7 @@ const Navbar = () => {
             >
               <Terminal size={14} />
             </span>
-            <span className={`font-heading font-bold text-base tracking-tight transition-colors duration-300
-              ${scrolled ? 'text-[#0A0A0F]' : 'text-white'}`}
-            >
+            <span className="font-heading font-bold text-base tracking-tight text-white">
               Code<span className="text-[#1A56FF]">Stancy</span>
             </span>
           </motion.button>
@@ -77,7 +75,7 @@ const Navbar = () => {
                   className={`relative pb-1 font-body text-sm font-medium
                     transition-colors duration-200
                     ${scrolled
-                      ? isActive ? 'text-[#1A56FF]' : 'text-[#0A0A0F]/70 hover:text-[#1A56FF]'
+                      ? isActive ? 'text-blue-400' : 'text-white/70 hover:text-white'
                       : isActive ? 'text-white' : 'text-white/75 hover:text-white'
                     }`}
                 >
@@ -105,9 +103,9 @@ const Navbar = () => {
               whileTap={{ scale: 0.95 }}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl
                 font-body text-sm font-semibold transition-all duration-300
-                ${scrolled
-                  ? 'bg-[#1A56FF] text-white shadow-md shadow-[#1A56FF]/30 hover:bg-[#0D2DB4]'
-                  : 'bg-white text-[#1A56FF] hover:bg-white/90 shadow-md shadow-black/20'
+              ${scrolled
+                ? 'bg-[#1A56FF] text-white shadow-md shadow-[#1A56FF]/30 hover:bg-[#0D2DB4]'
+                : 'bg-white text-[#1A56FF] hover:bg-white/90 shadow-md shadow-black/20'
                 }`}
             >
               <Download size={14} />
@@ -121,7 +119,7 @@ const Navbar = () => {
             onClick={() => setMenuOpen(!menuOpen)}
             className={`lg:hidden p-2 rounded-lg transition-colors duration-300
               ${scrolled
-                ? 'text-[#0A0A0F] hover:bg-gray-100'
+                ? 'text-white hover:bg-white/10'
                 : 'text-white hover:bg-white/10'}`}
           >
             {menuOpen ? <X size={22} /> : <Menu size={22} />}

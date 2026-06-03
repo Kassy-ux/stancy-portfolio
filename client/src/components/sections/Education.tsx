@@ -147,7 +147,7 @@ const Education = () => {
     : fallbackEducation;
 
   return (
-    <section id="education" className="relative min-h-screen bg-white section-padding overflow-hidden">
+    <section id="education" className="relative min-h-screen portfolio-dark-section section-padding overflow-hidden">
 
       {/* Dot background */}
       <div className="absolute inset-0 pointer-events-none"
@@ -156,7 +156,7 @@ const Education = () => {
              backgroundSize: '32px 32px',
            }} />
       <div className="absolute inset-0 pointer-events-none"
-           style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 40%, transparent 50%, white 100%)' }} />
+           style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 40%, transparent 45%, rgba(15,20,25,0.74) 100%)' }} />
 
       <div className="relative max-w-5xl mx-auto">
 

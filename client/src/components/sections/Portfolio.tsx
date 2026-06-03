@@ -228,7 +228,7 @@ const Portfolio = () => {
   const rest = projects.filter((p) => !p.featured);
 
   return (
-    <section id="portfolio" className="relative min-h-screen bg-[#F4F6FF] section-padding overflow-hidden">
+    <section id="portfolio" className="relative min-h-screen portfolio-dark-section section-padding overflow-hidden">
 
       {/* Graph-paper grid background */}
       <div
@@ -245,7 +245,7 @@ const Portfolio = () => {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse 80% 60% at 50% 50%, transparent 40%, #F4F6FF 100%)',
+          background: 'radial-gradient(ellipse 80% 60% at 50% 50%, transparent 35%, rgba(15,20,25,0.72) 100%)',
         }}
       />
 
