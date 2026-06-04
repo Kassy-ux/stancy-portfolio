@@ -14,7 +14,7 @@ const TYPED_STRINGS = [
 ];
 
 const DEFAULT_PROFILE_IMAGE_URL =
-  '';
+  'https://res.cloudinary.com/diia0dapa/image/upload/v1774165277/portfolio/hero/1774165274168-heroImage.png';
 
 const HeroBackgroundFallback = () => (
   <div
