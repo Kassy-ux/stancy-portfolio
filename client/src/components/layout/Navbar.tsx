@@ -14,12 +14,14 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { activeSection, scrollToSection } = useActiveSection();
 
-  const { data: settings } = useQuery<SettingsMap>({
+  const { data: settings, isFetching } = useQuery<SettingsMap>({
     queryKey: ['settings'],
     queryFn: () => api.settings.get() as Promise<SettingsMap>,
   });
   const BASE_URL = import.meta.env.VITE_API_URL || '/api';
-  const resumeUrl = settings?.resumeUrl ? `${BASE_URL}/settings/resume/download` : '#';
+  const resumeUrl = !isFetching && settings?.resumeUrl
+    ? `${BASE_URL}/settings/resume/download`
+    : null;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -94,6 +96,7 @@ const Navbar = () => {
           </div>
 
           {/* CTA */}
+          {resumeUrl && (
           <div className="hidden lg:flex items-center gap-3">
             <motion.a
               href={resumeUrl}
@@ -112,6 +115,7 @@ const Navbar = () => {
               Resume
             </motion.a>
           </div>
+          )}
 
           {/* Mobile hamburger */}
           <motion.button
@@ -180,20 +184,22 @@ const Navbar = () => {
               </motion.button>
             ))}
 
-            <motion.a
-              href={resumeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.55 }}
-              className="mt-6 flex items-center gap-2 bg-[#1A56FF] text-white
-                         px-8 py-3.5 rounded-xl font-body font-semibold
-                         shadow-lg shadow-[#1A56FF]/30"
-            >
-              <Download size={16} />
-              Download Resume
-            </motion.a>
+            {resumeUrl && (
+              <motion.a
+                href={resumeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.55 }}
+                className="mt-6 flex items-center gap-2 bg-[#1A56FF] text-white
+                           px-8 py-3.5 rounded-xl font-body font-semibold
+                           shadow-lg shadow-[#1A56FF]/30"
+              >
+                <Download size={16} />
+                Download Resume
+              </motion.a>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

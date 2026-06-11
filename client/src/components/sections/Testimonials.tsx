@@ -6,40 +6,6 @@ import { fadeInLeft, fadeInUp, staggerContainer } from '../../lib/animations';
 import { api } from '../../services/api';
 import { Testimonial } from '../../types';
 
-// ── Fallback static data ──
-const fallbackTestimonials: Testimonial[] = [
-  {
-    id: 1,
-    name: 'John Kamau',
-    role: 'Senior Developer — Teach2Give',
-    avatarUrl: null,
-    message:
-      'Stancy is one of the most dedicated developers I have worked with. Her ability to pick up new technologies quickly and deliver clean, well-structured code is impressive.',
-    rating: 5,
-    order: 1,
-  },
-  {
-    id: 2,
-    name: 'Sarah Wanjiru',
-    role: 'Project Manager',
-    avatarUrl: null,
-    message:
-      'Working with Stancy was a great experience. She communicates clearly, meets deadlines, and always goes the extra mile to ensure the product works perfectly.',
-    rating: 5,
-    order: 2,
-  },
-  {
-    id: 3,
-    name: 'David Ochieng',
-    role: 'Full Stack Engineer',
-    avatarUrl: null,
-    message:
-      'Stancy has a strong understanding of both frontend and backend development. Her TypeScript skills and attention to detail make her a valuable team member on any project.',
-    rating: 5,
-    order: 3,
-  },
-];
-
 // ── Star Rating ──
 const StarRating = ({ rating }: { rating: number }) => (
   <div className="flex items-center gap-1">
@@ -132,20 +98,26 @@ const TestimonialCard = ({
 const Testimonials = () => {
   const [current, setCurrent] = useState(0);
 
-  const { data: testimonialsData } = useQuery({
+  const { data: testimonialsData, isFetching } = useQuery({
     queryKey: ['testimonials'],
     queryFn: api.testimonials.getAll,
   });
 
-  const testimonials =
-    (testimonialsData && (testimonialsData as Testimonial[]).length > 0)
-      ? (testimonialsData as Testimonial[])
-      : fallbackTestimonials;
+  const testimonials = !isFetching && Array.isArray(testimonialsData)
+    ? (testimonialsData as Testimonial[])
+    : [];
+  const activeIndex = testimonials.length > 0
+    ? Math.min(current, testimonials.length - 1)
+    : 0;
 
-  const prev = () =>
+  const prev = () => {
+    if (testimonials.length === 0) return;
     setCurrent((i) => (i - 1 + testimonials.length) % testimonials.length);
-  const next = () =>
+  };
+  const next = () => {
+    if (testimonials.length === 0) return;
     setCurrent((i) => (i + 1) % testimonials.length);
+  };
 
   return (
     <section id="testimonials" className="min-h-screen portfolio-dark-section section-padding">
@@ -181,71 +153,89 @@ const Testimonials = () => {
           viewport={{ once: true }}
           className="hidden md:grid grid-cols-2 xl:grid-cols-3 gap-6"
         >
-          {testimonials.map((t, i) => (
-            <TestimonialCard key={t.id} testimonial={t} index={i} />
-          ))}
+          {isFetching && testimonials.length === 0 ? (
+            <p className="md:col-span-2 xl:col-span-3 font-body text-[#8892A4]">
+              Loading testimonials...
+            </p>
+          ) : testimonials.length === 0 ? (
+            <p className="md:col-span-2 xl:col-span-3 font-body text-[#8892A4]">
+              No testimonials added yet.
+            </p>
+          ) : (
+            testimonials.map((t, i) => (
+              <TestimonialCard key={t.id} testimonial={t} index={i} />
+            ))
+          )}
         </motion.div>
 
         {/* Mobile Carousel */}
         <div className="md:hidden">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={current}
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -40 }}
-              transition={{ duration: 0.3 }}
-            >
-              {testimonials[current] && (
-                <TestimonialCard
-                  testimonial={testimonials[current]}
-                  index={current}
-                />
-              )}
-            </motion.div>
-          </AnimatePresence>
+          {isFetching && testimonials.length === 0 ? (
+            <p className="font-body text-[#8892A4]">Loading testimonials...</p>
+          ) : testimonials.length === 0 ? (
+            <p className="font-body text-[#8892A4]">No testimonials added yet.</p>
+          ) : (
+            <>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={current}
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -40 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {testimonials[activeIndex] && (
+                    <TestimonialCard
+                      testimonial={testimonials[activeIndex]}
+                      index={activeIndex}
+                    />
+                  )}
+                </motion.div>
+              </AnimatePresence>
 
-          {/* Carousel Controls */}
-          <div className="flex items-center justify-center gap-4 mt-6">
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={prev}
-              className="w-10 h-10 rounded-full border border-gray-200
-                         flex items-center justify-center
-                         hover:border-[#1A56FF] hover:text-[#1A56FF]
-                         transition-colors"
-            >
-              <ChevronLeft size={18} />
-            </motion.button>
+              {/* Carousel Controls */}
+              <div className="flex items-center justify-center gap-4 mt-6">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={prev}
+                  className="w-10 h-10 rounded-full border border-gray-200
+                             flex items-center justify-center
+                             hover:border-[#1A56FF] hover:text-[#1A56FF]
+                             transition-colors"
+                >
+                  <ChevronLeft size={18} />
+                </motion.button>
 
-            {/* Dots */}
-            <div className="flex gap-2">
-              {testimonials.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrent(i)}
-                  className={`rounded-full transition-all duration-300
-                    ${i === current
-                      ? 'w-6 h-2 bg-[#1A56FF]'
-                      : 'w-2 h-2 bg-gray-200'
-                    }`}
-                />
-              ))}
-            </div>
+                {/* Dots */}
+                <div className="flex gap-2">
+                  {testimonials.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrent(i)}
+                      className={`rounded-full transition-all duration-300
+                        ${i === activeIndex
+                          ? 'w-6 h-2 bg-[#1A56FF]'
+                          : 'w-2 h-2 bg-gray-200'
+                        }`}
+                    />
+                  ))}
+                </div>
 
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={next}
-              className="w-10 h-10 rounded-full border border-gray-200
-                         flex items-center justify-center
-                         hover:border-[#1A56FF] hover:text-[#1A56FF]
-                         transition-colors"
-            >
-              <ChevronRight size={18} />
-            </motion.button>
-          </div>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={next}
+                  className="w-10 h-10 rounded-full border border-gray-200
+                             flex items-center justify-center
+                             hover:border-[#1A56FF] hover:text-[#1A56FF]
+                             transition-colors"
+                >
+                  <ChevronRight size={18} />
+                </motion.button>
+              </div>
+            </>
+          )}
         </div>
 
       </div>

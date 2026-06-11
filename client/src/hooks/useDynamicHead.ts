@@ -10,7 +10,6 @@ export const useDynamicHead = () => {
   const { data: settings } = useQuery({
     queryKey: ['settings'],
     queryFn: api.settings.get,
-    staleTime: 1000 * 60 * 5,
   });
 
   const s = settings as Record<string, string> | undefined;

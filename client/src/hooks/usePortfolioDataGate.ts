@@ -14,8 +14,11 @@ type PortfolioDataQuery = {
   retry: number;
 };
 
-const portfolioDataQueries: PortfolioDataQuery[] = [
+const criticalDataQueries: PortfolioDataQuery[] = [
   { queryKey: ['settings'], queryFn: api.settings.get, staleTime: 0, refetchOnMount: 'always', retry: 1 },
+];
+
+const backgroundDataQueries: PortfolioDataQuery[] = [
   { queryKey: ['certification'], queryFn: api.certification.getAll, staleTime: 0, refetchOnMount: 'always', retry: 1 },
   { queryKey: ['skills'], queryFn: api.skills.getAll, staleTime: 0, refetchOnMount: 'always', retry: 1 },
   { queryKey: ['projects'], queryFn: api.projects.getAll, staleTime: 0, refetchOnMount: 'always', retry: 1 },
@@ -24,20 +27,27 @@ const portfolioDataQueries: PortfolioDataQuery[] = [
   { queryKey: ['testimonials'], queryFn: api.testimonials.getAll, staleTime: 0, refetchOnMount: 'always', retry: 1 },
 ];
 
+const refreshQueries = (queryClient: ReturnType<typeof useQueryClient>, queries: PortfolioDataQuery[]) =>
+  Promise.allSettled(
+    queries.map(({ queryKey, queryFn }) =>
+      queryClient.fetchQuery({ queryKey, queryFn, staleTime: 0 }),
+    ),
+  );
+
 export const usePortfolioDataGate = () => {
   const queryClient = useQueryClient();
   const [initialLoadFinished, setInitialLoadFinished] = useState(false);
   const [refreshingAfterSleep, setRefreshingAfterSleep] = useState(false);
   const wakeRefreshInFlight = useRef(false);
 
-  const queryResults = useQueries({ queries: portfolioDataQueries });
-  const isFetchingPortfolioData = queryResults.some((query) => query.isPending || query.isFetching);
-  const showInitialLoader = !initialLoadFinished && isFetchingPortfolioData;
+  const criticalQueryResults = useQueries({ queries: criticalDataQueries });
+  const isFetchingCriticalData = criticalQueryResults.some((query) => query.isPending || query.isFetching);
+  const showInitialLoader = !initialLoadFinished && isFetchingCriticalData;
 
   useEffect(() => {
     if (initialLoadFinished) return;
 
-    if (!isFetchingPortfolioData) {
+    if (!isFetchingCriticalData) {
       setInitialLoadFinished(true);
       return;
     }
@@ -47,7 +57,7 @@ export const usePortfolioDataGate = () => {
     }, DATA_LOAD_TIMEOUT_MS);
 
     return () => window.clearTimeout(timeoutId);
-  }, [initialLoadFinished, isFetchingPortfolioData]);
+  }, [initialLoadFinished, isFetchingCriticalData]);
 
   useEffect(() => {
     let disposed = false;
@@ -61,11 +71,8 @@ export const usePortfolioDataGate = () => {
       setRefreshingAfterSleep(true);
 
       try {
-        const fetches = Promise.allSettled(
-          portfolioDataQueries.map(({ queryKey, queryFn }) =>
-            queryClient.fetchQuery({ queryKey, queryFn, staleTime: 0 }),
-          ),
-        );
+        void refreshQueries(queryClient, backgroundDataQueries);
+        const fetches = refreshQueries(queryClient, criticalDataQueries);
         const timeout = new Promise<void>((resolve) => {
           timeoutId = window.setTimeout(resolve, DATA_LOAD_TIMEOUT_MS);
         });

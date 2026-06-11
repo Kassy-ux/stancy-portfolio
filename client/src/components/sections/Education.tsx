@@ -5,29 +5,6 @@ import { fadeInLeft, fadeInUp } from '../../lib/animations';
 import { api } from '../../services/api';
 import { Education as EducationType } from '../../types';
 
-const fallbackEducation: EducationType[] = [
-  {
-    id: 1,
-    institution: 'University of Eastern Africa, Baraton',
-    degree: 'BSc. Software Engineering',
-    description: 'Relevant coursework: Data Structures & Algorithms, Web & Distributed Systems, RESTful APIs, Cloud Computing, and Database Management.',
-    logoUrl: null,
-    startDate: 'Sep 2022',
-    endDate: 'Aug 2026',
-    order: 1,
-  },
-  {
-    id: 2,
-    institution: 'Teach2Give',
-    degree: 'Software Engineering Program',
-    description: 'Intensive peer-to-peer bootcamp covering full-stack development with React, Node.js, TypeScript, PostgreSQL, DevOps, and agile methodologies.',
-    logoUrl: null,
-    startDate: '2025',
-    endDate: null,
-    order: 2,
-  },
-];
-
 const entryMeta = [
   { icon: GraduationCap, accent: '#1A56FF', bg: '#EEF3FF', label: 'University', side: 'left'  },
   { icon: BookOpen,      accent: '#059669', bg: '#ECFDF5', label: 'Bootcamp',   side: 'right' },
@@ -137,14 +114,14 @@ const TimelineEntry = ({ edu, index }: { edu: EducationType; index: number }) =>
 };
 
 const Education = () => {
-  const { data: educationData } = useQuery({
+  const { data: educationData, isFetching } = useQuery({
     queryKey: ['education'],
     queryFn: api.education.getAll,
   });
 
-  const educations = (educationData && (educationData as EducationType[]).length > 0)
+  const educations = !isFetching && Array.isArray(educationData)
     ? (educationData as EducationType[])
-    : fallbackEducation;
+    : [];
 
   return (
     <section id="education" className="relative min-h-screen portfolio-dark-section section-padding overflow-hidden">
@@ -195,9 +172,15 @@ const Education = () => {
                           to-transparent" />
 
           <div className="flex flex-col gap-12 md:gap-16">
-            {educations.map((edu, i) => (
-              <TimelineEntry key={edu.id} edu={edu} index={i} />
-            ))}
+            {isFetching && educations.length === 0 ? (
+              <p className="font-body text-[#8892A4]">Loading education...</p>
+            ) : educations.length === 0 ? (
+              <p className="font-body text-[#8892A4]">No education added yet.</p>
+            ) : (
+              educations.map((edu, i) => (
+                <TimelineEntry key={edu.id} edu={edu} index={i} />
+              ))
+            )}
           </div>
         </div>
 

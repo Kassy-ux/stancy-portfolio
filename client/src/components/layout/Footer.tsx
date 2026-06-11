@@ -11,10 +11,11 @@ const Footer = () => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const { data: settings } = useQuery<SettingsMap>({
+  const { data: settings, isFetching } = useQuery<SettingsMap>({
     queryKey: ['settings'],
     queryFn: () => api.settings.get() as Promise<SettingsMap>,
   });
+  const shownSettings = isFetching ? undefined : settings;
 
   return (
     <footer className="bg-[#0A0A0F] text-white">
@@ -47,24 +48,24 @@ const Footer = () => {
             </p>
             <div className="flex gap-3 mt-2">
               {[
-                { id: 'github',   icon: Github,   href: settings?.githubUrl || '#' },
-                { id: 'linkedin', icon: Linkedin, href: settings?.linkedinUrl || '#' },
-                { id: 'mail',     icon: Mail,     href: settings?.email ? `mailto:${settings.email}` : '#' },
-              ].map(({ id, icon: Icon, href }) => (
-                <motion.a
-                  key={id}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  className="w-9 h-9 rounded-lg bg-white/5 border border-white/10
-                             flex items-center justify-center text-white/50
-                             hover:bg-[#1A56FF] hover:text-white
-                             hover:border-[#1A56FF] transition-all duration-200"
-                >
-                  <Icon size={16} />
-                </motion.a>
-              ))}
+                { id: 'github',   icon: Github,   href: shownSettings?.githubUrl },
+                { id: 'linkedin', icon: Linkedin, href: shownSettings?.linkedinUrl },
+                { id: 'mail',     icon: Mail,     href: shownSettings?.email ? `mailto:${shownSettings.email}` : undefined },
+              ].map(({ id, icon: Icon, href }) => href ? (
+                  <motion.a
+                    key={id}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.1, y: -2 }}
+                    className="w-9 h-9 rounded-lg bg-white/5 border border-white/10
+                               flex items-center justify-center text-white/50
+                               hover:bg-[#1A56FF] hover:text-white
+                               hover:border-[#1A56FF] transition-all duration-200"
+                  >
+                    <Icon size={16} />
+                  </motion.a>
+                ) : null)}
             </div>
           </motion.div>
 
@@ -107,14 +108,14 @@ const Footer = () => {
               Get In Touch
             </h4>
             <div className="flex flex-col gap-3">
-              {settings?.email && (
-                <a href={`mailto:${settings.email}`} className="font-body text-sm text-white/50 hover:text-[#1A56FF] transition-colors">{settings.email}</a>
+              {shownSettings?.email && (
+                <a href={`mailto:${shownSettings.email}`} className="font-body text-sm text-white/50 hover:text-[#1A56FF] transition-colors">{shownSettings.email}</a>
               )}
-              {settings?.phone && (
-                <a href={`tel:${settings.phone.replace(/\s+/g, '')}`} className="font-body text-sm text-white/50 hover:text-[#1A56FF] transition-colors">{settings.phone}</a>
+              {shownSettings?.phone && (
+                <a href={`tel:${shownSettings.phone.replace(/\s+/g, '')}`} className="font-body text-sm text-white/50 hover:text-[#1A56FF] transition-colors">{shownSettings.phone}</a>
               )}
-              {settings?.location && (
-                <p className="font-body text-sm text-white/50">{settings.location}</p>
+              {shownSettings?.location && (
+                <p className="font-body text-sm text-white/50">{shownSettings.location}</p>
               )}
             </div>
           </motion.div>

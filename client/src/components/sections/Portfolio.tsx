@@ -5,61 +5,6 @@ import { fadeInLeft, fadeInUp, staggerContainer } from '../../lib/animations';
 import { api } from '../../services/api';
 import { Project } from '../../types';
 
-const fallbackProjects: Project[] = [
-  {
-    id: 1,
-    title: 'Bitsa Club Website',
-    description:
-      'Designed and developed the BITSA web platform to centralize student engagement, featuring role-based access for students, leaders, and administrators, integrated AI-assisted support, event management, and community connectivity.',
-    techStack: ['React.js', 'TypeScript', 'Tailwind CSS', 'Node.js', 'Express.js', 'PostgreSQL'],
-    imageUrl: null,
-    liveUrl: '#',
-    githubUrl: '#',
-    featured: true,
-    order: 1,
-    createdAt: null,
-  },
-  {
-    id: 2,
-    title: 'TicKenya — Event Ticketing',
-    description:
-      'Full-stack Event Ticketing and Venue Booking System with modular React architecture, secure JWT-based APIs, real-time RTK Query, M-Pesa integration, and dynamic role-based dashboards.',
-    techStack: ['React.js', 'TypeScript', 'Redux Toolkit', 'Node.js', 'Express.js', 'PostgreSQL'],
-    imageUrl: null,
-    liveUrl: '#',
-    githubUrl: '#',
-    featured: true,
-    order: 2,
-    createdAt: null,
-  },
-  {
-    id: 3,
-    title: 'Portfolio CMS',
-    description:
-      'A headless CMS powering this portfolio — REST API with JWT auth, Drizzle ORM, and Cloudinary for media management.',
-    techStack: ['Express.js', 'TypeScript', 'Drizzle ORM', 'PostgreSQL', 'Cloudinary'],
-    imageUrl: null,
-    liveUrl: null,
-    githubUrl: '#',
-    featured: false,
-    order: 3,
-    createdAt: null,
-  },
-  {
-    id: 4,
-    title: 'Auth Microservice',
-    description:
-      'Reusable JWT + refresh-token auth microservice with role-based access control, rate limiting, and audit logs.',
-    techStack: ['Node.js', 'Express.js', 'PostgreSQL', 'Redis'],
-    imageUrl: null,
-    liveUrl: null,
-    githubUrl: '#',
-    featured: false,
-    order: 4,
-    createdAt: null,
-  },
-];
-
 const placeholderGradients = [
   { from: '#1A56FF', to: '#0D2DB4' },
   { from: '#0D2DB4', to: '#7C3AED' },
@@ -216,14 +161,20 @@ const SmallCard = ({ project, index }: { project: Project; index: number }) => (
 );
 
 const Portfolio = () => {
-  const { data: projectsData } = useQuery({
+  const { data: projectsData, isFetching } = useQuery({
     queryKey: ['projects'],
     queryFn: api.projects.getAll,
   });
+  const { data: settingsData, isFetching: isFetchingSettings } = useQuery({
+    queryKey: ['settings'],
+    queryFn: api.settings.get,
+  });
 
-  const projects = (projectsData && (projectsData as Project[]).length > 0)
+  const settings = settingsData as Record<string, string> | undefined;
+  const githubUrl = isFetchingSettings ? undefined : settings?.githubUrl;
+  const projects = !isFetching && Array.isArray(projectsData)
     ? (projectsData as Project[])
-    : fallbackProjects;
+    : [];
   const featured = projects.filter((p) => p.featured);
   const rest = projects.filter((p) => !p.featured);
 
@@ -281,43 +232,57 @@ const Portfolio = () => {
           viewport={{ once: true }}
           className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"
         >
-          {/* Featured: span 2 cols */}
-          {featured.map((project, i) => (
-            <div key={project.id}
-                 className={featured.length === 1 ? 'md:col-span-2' : ''}>
-              <FeaturedCard project={project} index={i} />
-            </div>
-          ))}
+          {isFetching && projects.length === 0 ? (
+            <p className="md:col-span-2 xl:col-span-3 font-body text-[#8892A4]">
+              Loading projects...
+            </p>
+          ) : projects.length === 0 ? (
+            <p className="md:col-span-2 xl:col-span-3 font-body text-[#8892A4]">
+              No projects added yet.
+            </p>
+          ) : (
+            <>
+              {/* Featured: span 2 cols */}
+              {featured.map((project, i) => (
+                <div key={project.id}
+                     className={featured.length === 1 ? 'md:col-span-2' : ''}>
+                  <FeaturedCard project={project} index={i} />
+                </div>
+              ))}
 
-          {/* Rest: single col */}
-          {rest.map((project, i) => (
-            <SmallCard key={project.id} project={project} index={featured.length + i} />
-          ))}
+              {/* Rest: single col */}
+              {rest.map((project, i) => (
+                <SmallCard key={project.id} project={project} index={featured.length + i} />
+              ))}
+            </>
+          )}
         </motion.div>
 
         {/* GitHub CTA */}
-        <motion.div
-          variants={fadeInUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="flex justify-center mt-16"
-        >
-          <motion.a
-            href="https://github.com/Kassy-ux"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2.5 bg-[#1A56FF] text-white
-                       font-body font-semibold px-8 py-3.5 rounded-full
-                       hover:bg-[#0D2DB4] transition-colors
-                       shadow-lg shadow-[#1A56FF]/25"
+        {githubUrl && (
+          <motion.div
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="flex justify-center mt-16"
           >
-            <Github size={16} />
-            View more on GitHub
-          </motion.a>
-        </motion.div>
+            <motion.a
+              href={githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center gap-2.5 bg-[#1A56FF] text-white
+                         font-body font-semibold px-8 py-3.5 rounded-full
+                         hover:bg-[#0D2DB4] transition-colors
+                         shadow-lg shadow-[#1A56FF]/25"
+            >
+              <Github size={16} />
+              View more on GitHub
+            </motion.a>
+          </motion.div>
+        )}
       </div>
     </section>
   );

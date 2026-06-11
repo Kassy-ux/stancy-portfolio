@@ -5,19 +5,6 @@ import { fadeInLeft, fadeInUp, staggerContainer } from '../../lib/animations';
 import type { Certification as TCertification } from '../../types';
 import { api } from '../../services/api';
 
-const fallbackCertifications: TCertification[] = [
-  {
-    id: 1,
-    issuer: 'Teach2Give',
-    certificateName: 'Full Stack Software Engineering',
-    description: 'Intensive training in React, Node.js, and PostgreSQL.',
-    issueDate: 'July 2024',
-    expiryDate: null,
-    certificateUrl: null,
-    order: 1,
-  },
-];
-
 const floatingSymbols = [
   { text: '{ }',      x: '3%',  y: '8%',  size: 'text-6xl',  delay: 0    },
   { text: '</>',      x: '85%', y: '6%',  size: 'text-6xl',  delay: 0.8  },
@@ -31,12 +18,14 @@ const floatingSymbols = [
 ];
 
 const Certification = () => {
-  const { data: certificationData } = useQuery({
+  const { data: certificationData, isFetching } = useQuery({
     queryKey: ['certification'],
     queryFn: api.certification.getAll,
   });
 
-  const certifications = (certificationData as TCertification[]) ?? fallbackCertifications;
+  const certifications = !isFetching && Array.isArray(certificationData)
+    ? (certificationData as TCertification[])
+    : [];
 
   return (
     <section id="certification" className="relative min-h-screen portfolio-dark-section section-padding overflow-hidden">
@@ -92,68 +81,78 @@ const Certification = () => {
           viewport={{ once: true }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {certifications.map((cert) => (
-            <motion.div
-              key={cert.id}
-              variants={fadeInUp}
-              whileHover={{ y: -8 }}
-              className="group bg-white rounded-3xl p-8 border border-gray-100
-                         hover:border-[#1A56FF]/30 hover:shadow-2xl 
-                         transition-all duration-500 relative overflow-hidden"
-            >
-              {/* Subtle accent corner */}
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#1A56FF]/5 to-transparent rounded-bl-full" />
-              
-              {/* Icon & Issuer */}
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 rounded-2xl bg-[#1A56FF]/10 flex items-center justify-center text-[#1A56FF] group-hover:scale-110 transition-transform duration-500">
-                  <Award size={28} strokeWidth={1.5} />
-                </div>
-                <div>
-                  <h4 className="font-heading font-bold text-[#0A0A0F] text-lg leading-tight uppercase tracking-wide">
-                    {cert.issuer}
-                  </h4>
-                  <div className="flex items-center gap-1.5 text-[#1A56FF] text-xs font-semibold mt-1">
-                    <Calendar size={12} />
-                    {cert.issueDate}
+          {isFetching && certifications.length === 0 ? (
+            <p className="md:col-span-2 lg:col-span-3 font-body text-[#8892A4]">
+              Loading certifications...
+            </p>
+          ) : certifications.length === 0 ? (
+            <p className="md:col-span-2 lg:col-span-3 font-body text-[#8892A4]">
+              No certifications added yet.
+            </p>
+          ) : (
+            certifications.map((cert) => (
+              <motion.div
+                key={cert.id}
+                variants={fadeInUp}
+                whileHover={{ y: -8 }}
+                className="group bg-white rounded-3xl p-8 border border-gray-100
+                           hover:border-[#1A56FF]/30 hover:shadow-2xl 
+                           transition-all duration-500 relative overflow-hidden"
+              >
+                {/* Subtle accent corner */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#1A56FF]/5 to-transparent rounded-bl-full" />
+
+                {/* Icon & Issuer */}
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-[#1A56FF]/10 flex items-center justify-center text-[#1A56FF] group-hover:scale-110 transition-transform duration-500">
+                    <Award size={28} strokeWidth={1.5} />
+                  </div>
+                  <div>
+                    <h4 className="font-heading font-bold text-[#0A0A0F] text-lg leading-tight uppercase tracking-wide">
+                      {cert.issuer}
+                    </h4>
+                    <div className="flex items-center gap-1.5 text-[#1A56FF] text-xs font-semibold mt-1">
+                      <Calendar size={12} />
+                      {cert.issueDate}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Certificate Name */}
-              <h3 className="font-heading font-extrabold text-[#0A0A0F] text-xl mb-4 group-hover:text-[#1A56FF] transition-colors duration-300">
-                {cert.certificateName}
-              </h3>
+                {/* Certificate Name */}
+                <h3 className="font-heading font-extrabold text-[#0A0A0F] text-xl mb-4 group-hover:text-[#1A56FF] transition-colors duration-300">
+                  {cert.certificateName}
+                </h3>
 
-              {/* Description */}
-              {cert.description && (
-                <p className="font-body text-[#8892A4] text-sm leading-relaxed mb-8">
-                  {cert.description}
-                </p>
-              )}
-
-              {/* Action Area */}
-              <div className="flex items-center justify-between pt-6 border-t border-gray-50">
-                <span className="flex items-center gap-2 text-[#1A56FF] text-xs font-bold uppercase tracking-widest">
-                  <CheckCircle2 size={14} />
-                  Verified
-                </span>
-                
-                {cert.certificateUrl && (
-                  <motion.a
-                    href={cert.certificateUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center gap-2 bg-[#0A0A0F] text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#1A56FF] transition-all duration-300 shadow-lg shadow-black/5"
-                  >
-                    View <ExternalLink size={12} />
-                  </motion.a>
+                {/* Description */}
+                {cert.description && (
+                  <p className="font-body text-[#8892A4] text-sm leading-relaxed mb-8">
+                    {cert.description}
+                  </p>
                 )}
-              </div>
-            </motion.div>
-          ))}
+
+                {/* Action Area */}
+                <div className="flex items-center justify-between pt-6 border-t border-gray-50">
+                  <span className="flex items-center gap-2 text-[#1A56FF] text-xs font-bold uppercase tracking-widest">
+                    <CheckCircle2 size={14} />
+                    Verified
+                  </span>
+
+                  {cert.certificateUrl && (
+                    <motion.a
+                      href={cert.certificateUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="flex items-center gap-2 bg-[#0A0A0F] text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#1A56FF] transition-all duration-300 shadow-lg shadow-black/5"
+                    >
+                      View <ExternalLink size={12} />
+                    </motion.a>
+                  )}
+                </div>
+              </motion.div>
+            ))
+          )}
         </motion.div>
       </div>
     </section>

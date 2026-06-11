@@ -39,17 +39,14 @@ const whatIDo = [
 ];
 
 const About = () => {
-  const { data: settingsData } = useQuery({
+  const { data: settingsData, isFetching } = useQuery({
     queryKey: ['settings'],
     queryFn: api.settings.get,
-    staleTime: 1000 * 60 * 5,
   });
-  const s = settingsData as Record<string, string> | undefined;
+  const s = isFetching ? undefined : settingsData as Record<string, string> | undefined;
 
-  const photoUrl  = s?.heroImageUrl || 'https://res.cloudinary.com/diia0dapa/image/upload/v1774165277/portfolio/hero/1774165274168-heroImage.png';
-  const aboutBio  = s?.aboutBio    || null;
-  const bio1 = aboutBio ?? 'Results-driven Full-Stack Software Engineer with 1+ years of experience building and deploying production-ready web applications using TypeScript, React, Next.js, Node.js, and PostgreSQL.';
-  const bio2 = 'Strong understanding of end-to-end application architecture, RESTful APIs, authentication, and role-based access control. Currently pursuing a computer science in  laikipia university.';
+  const photoUrl = s?.heroImageUrl || null;
+  const aboutBio = s?.aboutBio || null;
 
   return (
     <section id="about" className="min-h-screen portfolio-dark-section section-padding">
@@ -89,7 +86,7 @@ const About = () => {
                 {photoUrl ? (
                   <img src={photoUrl} alt="About" className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-[#8892A4] font-body">Your Photo Here</span>
+                  <Code2 size={48} className="text-[#8892A4]" strokeWidth={1.4} />
                 )}
               </div>
               <div className="absolute -top-3 -right-3 w-6 h-6 bg-[#FFD600] rounded-full" />
@@ -136,12 +133,15 @@ const About = () => {
                 <span className="text-[#1A56FF]">Stancy Ngereso</span>
                 {", Full Stack Developer"}
               </h3>
-              <p className="font-body text-[#8892A4] leading-relaxed">
-                {bio1}
-              </p>
-              <p className="font-body text-[#8892A4] leading-relaxed mt-3">
-                {bio2}
-              </p>
+              {aboutBio ? (
+                <p className="font-body text-[#8892A4] leading-relaxed">
+                  {aboutBio}
+                </p>
+              ) : (
+                <p className="font-body text-[#8892A4] leading-relaxed">
+                  About details are being updated.
+                </p>
+              )}
             </div>
 
             {/* What I Do */}

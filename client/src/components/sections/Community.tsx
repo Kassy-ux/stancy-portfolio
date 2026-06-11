@@ -11,16 +11,9 @@ interface CommunityDisplay extends CommunityType {
   stats?: { label: string; value: string }[];
 }
 
-const fallbackCommunity: CommunityDisplay[] = [
+const communityDisplayMetadata: Array<Pick<CommunityDisplay, 'name' | 'tags' | 'stats'>> = [
   {
-    id: 1,
     name: 'Microsoft Learn Student Ambassadors',
-    role: 'Gold Ambassador',
-    description:
-      'Organise tech workshops and learning sessions helping students explore Azure, AI tools, and cloud development. Achieved Gold milestone through consistent community impact.',
-    logoUrl: null,
-    bioUrl: '#',
-    order: 1,
     tags: ['Azure', 'AI / ML', 'Cloud', 'TypeScript'],
     stats: [
       { label: 'workshops run', value: '8+'  },
@@ -29,14 +22,7 @@ const fallbackCommunity: CommunityDisplay[] = [
     ],
   },
   {
-    id: 2,
     name: 'Koding & Kahawa Developers',
-    role: 'Contributor',
-    description:
-      'Participate in monthly developer meetups, share full-stack knowledge, and collaborate on open source projects with developers across Kenya.',
-    logoUrl: null,
-    bioUrl: null,
-    order: 2,
     tags: ['React', 'Node.js', 'Open Source', 'Mentorship'],
     stats: [
       { label: 'meetups attended', value: '10+' },
@@ -45,14 +31,7 @@ const fallbackCommunity: CommunityDisplay[] = [
     ],
   },
   {
-    id: 3,
     name: 'Computer Society of Kirinyaga',
-    role: 'Member',
-    description:
-      'Engage with fellow tech students, participate in hackathons, and contribute to building an innovative learning culture within the university.',
-    logoUrl: null,
-    bioUrl: null,
-    order: 3,
     tags: ['Hackathons', 'Mentorship', 'Leadership'],
     stats: [
       { label: 'hackathons', value: '3+' },
@@ -193,22 +172,22 @@ const CommunityCard = ({ item, index }: { item: CommunityDisplay; index: number 
 };
 
 const Community = () => {
-  const { data: communityData } = useQuery({
+  const { data: communityData, isFetching } = useQuery({
     queryKey: ['community'],
     queryFn: api.community.getAll,
   });
 
-  const rawData = communityData as CommunityType[] | undefined;
+  const rawData = !isFetching && Array.isArray(communityData)
+    ? (communityData as CommunityType[])
+    : [];
 
   // Merge live API data with local display metadata — match by name, not by index
-  const communities: CommunityDisplay[] = (rawData && rawData.length > 0)
-    ? rawData.map((item) => {
-        const match = fallbackCommunity.find(
-          (f) => f.name.toLowerCase() === item.name.toLowerCase()
-        );
-        return { ...item, tags: match?.tags, stats: match?.stats };
-      })
-    : fallbackCommunity;
+  const communities: CommunityDisplay[] = rawData.map((item) => {
+    const match = communityDisplayMetadata.find(
+      (f) => f.name.toLowerCase() === item.name.toLowerCase()
+    );
+    return { ...item, tags: match?.tags, stats: match?.stats };
+  });
 
   return (
     <section id="community" className="relative min-h-screen portfolio-dark-section section-padding overflow-hidden">
@@ -247,9 +226,19 @@ const Community = () => {
         </motion.p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {communities.map((item, i) => (
-            <CommunityCard key={item.id} item={item} index={i} />
-          ))}
+          {isFetching && communities.length === 0 ? (
+            <p className="md:col-span-2 xl:col-span-3 font-body text-[#8892A4]">
+              Loading communities...
+            </p>
+          ) : communities.length === 0 ? (
+            <p className="md:col-span-2 xl:col-span-3 font-body text-[#8892A4]">
+              No communities added yet.
+            </p>
+          ) : (
+            communities.map((item, i) => (
+              <CommunityCard key={item.id} item={item} index={i} />
+            ))
+          )}
         </div>
 
       </div>

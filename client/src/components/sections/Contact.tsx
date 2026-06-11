@@ -24,29 +24,28 @@ type ContactForm = z.infer<typeof contactSchema>;
 const Contact = () => {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
-  const { data: settingsData } = useQuery({
+  const { data: settingsData, isFetching } = useQuery({
     queryKey: ['settings'],
     queryFn: api.settings.get,
-    staleTime: 1000 * 60 * 5,
   });
-  const s = settingsData as Record<string, string> | undefined;
+  const s = isFetching ? undefined : settingsData as Record<string, string> | undefined;
 
-  const email      = s?.email      || 'stancyngereso4@gmail.com';
-  const phone      = s?.phone      || '+254 798 696 008';
-  const location   = s?.location   || 'Nairobi, Kenya';
-  const githubUrl  = s?.githubUrl  || 'https://github.com/Kassy-ux';
-  const linkedinUrl = s?.linkedinUrl || 'https://linkedin.com/in/stancy-ngereso';
+  const email = s?.email || '';
+  const phone = s?.phone || '';
+  const location = s?.location || '';
+  const githubUrl = s?.githubUrl || '';
+  const linkedinUrl = s?.linkedinUrl || '';
 
   const contactInfo = [
-    { icon: Mail,   label: 'Email',    value: email,    href: `mailto:${email}`,                  color: 'bg-[#1A56FF]/10 text-[#1A56FF]'  },
-    { icon: Phone,  label: 'Phone',    value: phone,    href: `tel:${phone.replace(/\s+/g, '')}`, color: 'bg-[#FFD600]/15 text-[#B8960C]'  },
-    { icon: MapPin, label: 'Location', value: location, href: null,                               color: 'bg-[#0D2DB4]/10 text-[#0D2DB4]'  },
+    ...(email ? [{ icon: Mail, label: 'Email', value: email, href: `mailto:${email}`, color: 'bg-[#1A56FF]/10 text-[#1A56FF]' }] : []),
+    ...(phone ? [{ icon: Phone, label: 'Phone', value: phone, href: `tel:${phone.replace(/\s+/g, '')}`, color: 'bg-[#FFD600]/15 text-[#B8960C]' }] : []),
+    ...(location ? [{ icon: MapPin, label: 'Location', value: location, href: null, color: 'bg-[#0D2DB4]/10 text-[#0D2DB4]' }] : []),
   ];
 
   const socialLinks = [
-    { icon: Github,   label: 'GitHub',   href: githubUrl,  color: 'hover:bg-[#0A0A0F] hover:text-white'          },
-    { icon: Linkedin, label: 'LinkedIn', href: linkedinUrl, color: 'hover:bg-[#1A56FF] hover:text-white'         },
-    { icon: Mail,     label: 'Email',    href: `mailto:${email}`, color: 'hover:bg-[#FFD600] hover:text-[#0A0A0F]' },
+    ...(githubUrl ? [{ icon: Github, label: 'GitHub', href: githubUrl, color: 'hover:bg-[#0A0A0F] hover:text-white' }] : []),
+    ...(linkedinUrl ? [{ icon: Linkedin, label: 'LinkedIn', href: linkedinUrl, color: 'hover:bg-[#1A56FF] hover:text-white' }] : []),
+    ...(email ? [{ icon: Mail, label: 'Email', href: `mailto:${email}`, color: 'hover:bg-[#FFD600] hover:text-[#0A0A0F]' }] : []),
   ];
 
   const {
@@ -121,7 +120,7 @@ const Contact = () => {
 
             {/* Contact items */}
             <div className="flex flex-col gap-4">
-              {contactInfo.map(({ icon: Icon, label, value, href, color }) => (
+              {contactInfo.length > 0 ? contactInfo.map(({ icon: Icon, label, value, href, color }) => (
                 <motion.div
                   key={label}
                   whileHover={{ x: 4, transition: { duration: 0.2 } }}
@@ -153,10 +152,13 @@ const Contact = () => {
                     )}
                   </div>
                 </motion.div>
-              ))}
+              )) : (
+                <p className="font-body text-[#8892A4] text-sm">Contact details are being updated.</p>
+              )}
             </div>
 
             {/* Social Links */}
+            {socialLinks.length > 0 && (
             <div>
               <p className="font-body text-[#8892A4] text-sm mb-4">
                 Find me on
@@ -181,6 +183,7 @@ const Contact = () => {
                 ))}
               </div>
             </div>
+            )}
 
             {/* Availability status */}
             <motion.div
@@ -234,7 +237,7 @@ const Contact = () => {
                 </label>
                 <input
                   {...register('name')}
-                  placeholder="Stancy Ngereso"
+                  placeholder="Your name"
                   className={`font-body text-sm px-4 py-3 rounded-xl
                              border bg-[#F4F6FF] outline-none
                              transition-all duration-200
@@ -288,7 +291,7 @@ const Contact = () => {
                 <textarea
                   {...register('message')}
                   rows={5}
-                  placeholder="Hi Stancy, I'd love to work with you on..."
+                  placeholder="Hi, I'd love to work with you on..."
                   className={`font-body text-sm px-4 py-3 rounded-xl
                              border bg-[#F4F6FF] outline-none resize-none
                              transition-all duration-200

@@ -13,9 +13,6 @@ const TYPED_STRINGS = [
   'Problem Solver',
 ];
 
-const DEFAULT_PROFILE_IMAGE_URL =
-  'https://res.cloudinary.com/diia0dapa/image/upload/v1774165277/portfolio/hero/1774165274168-heroImage.png';
-
 const HeroBackgroundFallback = () => (
   <div
     className="absolute inset-0"
@@ -74,18 +71,22 @@ const Hero = () => {
     document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const { data: settings } = useQuery({
+  const { data: settings, isFetching } = useQuery({
     queryKey: ['settings'],
     queryFn: api.settings.get,
-    staleTime: 1000 * 60 * 2,
   });
 
-  const s = settings as Record<string, string> | undefined;
+  const s = isFetching ? undefined : settings as Record<string, string> | undefined;
   const tagline  = s?.tagline  || 'Code that solves real problems — not just runs. Building scalable web applications from frontend to backend.';
-  const photoUrl = s?.heroImageUrl || DEFAULT_PROFILE_IMAGE_URL;
-  const githubUrl   = s?.githubUrl   || 'https://github.com/Kassy-ux';
-  const linkedinUrl = s?.linkedinUrl || 'https://www.linkedin.com/in/stancy-ngereso';
-  const emailVal    = s?.email       || 'stancyngereso4@gmail.com';
+  const photoUrl = s?.heroImageUrl || null;
+  const githubUrl = s?.githubUrl;
+  const linkedinUrl = s?.linkedinUrl;
+  const emailVal = s?.email;
+  const socialLinks = [
+    { icon: Github, href: githubUrl, label: 'GitHub' },
+    { icon: Linkedin, href: linkedinUrl, label: 'LinkedIn' },
+    { icon: Mail, href: emailVal ? `mailto:${emailVal}` : undefined, label: 'Email' },
+  ];
 
   return (
     <section
@@ -221,26 +222,22 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.5 }}
               className="flex items-center gap-4 mt-2"
             >
-              {[
-                { icon: Github, href: githubUrl, label: 'GitHub' },
-                { icon: Linkedin, href: linkedinUrl, label: 'LinkedIn' },
-                { icon: Mail, href: `mailto:${emailVal}`, label: 'Email' },
-              ].map(({ icon: Icon, href, label }) => (
-                <motion.a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.2, y: -3 }}
-                  className="w-10 h-10 rounded-full bg-white/10
-                             border border-white/20 flex items-center
-                             justify-center text-white hover:bg-blue-500/20
-                             hover:border-blue-400 transition-colors"
-                  aria-label={label}
-                >
-                  <Icon size={18} />
-                </motion.a>
-              ))}
+              {socialLinks.map(({ icon: Icon, href, label }) => href ? (
+                  <motion.a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.2, y: -3 }}
+                    className="w-10 h-10 rounded-full bg-white/10
+                               border border-white/20 flex items-center
+                               justify-center text-white hover:bg-blue-500/20
+                               hover:border-blue-400 transition-colors"
+                    aria-label={label}
+                  >
+                    <Icon size={18} />
+                  </motion.a>
+                ) : null)}
             </motion.div>
           </div>
 
@@ -260,11 +257,19 @@ const Hero = () => {
                 className="relative"
               >
                 {/* Photo */}
-                <img
-                  src={photoUrl}
-                  alt="Stancy Ngereso"
-                  className="w-auto h-[360px] max-w-[78vw] object-contain md:h-[500px] md:max-w-none"
-                />
+                {photoUrl ? (
+                  <img
+                    src={photoUrl}
+                    alt="Stancy Ngereso"
+                    className="w-auto h-[360px] max-w-[78vw] object-contain md:h-[500px] md:max-w-none"
+                  />
+                ) : (
+                  <div className="w-[280px] h-[360px] max-w-[78vw] md:w-[380px] md:h-[500px]
+                                  rounded-3xl border border-blue-500/20 bg-white/5 backdrop-blur
+                                  flex items-center justify-center text-blue-300">
+                    <Code2 size={64} strokeWidth={1.4} />
+                  </div>
+                )}
 
                 {/* Floating card — Experience */}
                 <motion.div

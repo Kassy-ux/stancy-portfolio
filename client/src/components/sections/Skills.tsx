@@ -5,29 +5,6 @@ import { fadeInLeft, fadeInUp } from '../../lib/animations';
 import { api } from '../../services/api';
 import { Skill } from '../../types';
 
-const fallbackSkills: Skill[] = [
-  { id: 1,  name: 'TypeScript',   category: 'Languages',  iconUrl: null, order: 1 },
-  { id: 2,  name: 'JavaScript',   category: 'Languages',  iconUrl: null, order: 2 },
-  { id: 3,  name: 'C#',           category: 'Languages',  iconUrl: null, order: 3 },
-  { id: 4,  name: 'React',        category: 'Frontend',   iconUrl: null, order: 1 },
-  { id: 5,  name: 'Next.js',      category: 'Frontend',   iconUrl: null, order: 2 },
-  { id: 6,  name: 'Tailwind CSS', category: 'Frontend',   iconUrl: null, order: 3 },
-  { id: 7,  name: 'React Native', category: 'Frontend',   iconUrl: null, order: 4 },
-  { id: 8,  name: 'Kotlin',       category: 'Frontend',   iconUrl: null, order: 5 },
-  { id: 9,  name: 'Node.js',      category: 'Backend',    iconUrl: null, order: 1 },
-  { id: 10, name: 'Express.js',   category: 'Backend',    iconUrl: null, order: 2 },
-  { id: 11, name: 'NestJS',       category: 'Backend',    iconUrl: null, order: 3 },
-  { id: 12, name: 'REST APIs',    category: 'Backend',    iconUrl: null, order: 4 },
-  { id: 13, name: 'PostgreSQL',   category: 'Databases',  iconUrl: null, order: 1 },
-  { id: 14, name: 'MySQL',        category: 'Databases',  iconUrl: null, order: 2 },
-  { id: 15, name: 'MongoDB',      category: 'Databases',  iconUrl: null, order: 3 },
-  { id: 16, name: 'Docker',       category: 'DevOps',     iconUrl: null, order: 1 },
-  { id: 17, name: 'Git / GitHub', category: 'DevOps',     iconUrl: null, order: 2 },
-  { id: 18, name: 'AWS',          category: 'DevOps',     iconUrl: null, order: 3 },
-  { id: 19, name: 'CI/CD',        category: 'DevOps',     iconUrl: null, order: 4 },
-  { id: 20, name: 'Jest',         category: 'DevOps',     iconUrl: null, order: 5 },
-];
-
 const tabMeta: Record<string, { accent: string; file: string; comment: string }> = {
   'Languages':  { accent: '#1A56FF', file: 'languages.ts',  comment: '// runtime & compiled' },
   'Frontend':   { accent: '#B8960C', file: 'frontend.tsx',  comment: '// ui & mobile'         },
@@ -37,14 +14,14 @@ const tabMeta: Record<string, { accent: string; file: string; comment: string }>
 };
 
 const Skills = () => {
-  const { data: skillsData } = useQuery({
+  const { data: skillsData, isFetching } = useQuery({
     queryKey: ['skills'],
     queryFn: api.skills.getAll,
   });
 
-  const skills = (skillsData && (skillsData as Skill[]).length > 0)
+  const skills = !isFetching && Array.isArray(skillsData)
     ? (skillsData as Skill[])
-    : fallbackSkills;
+    : [];
 
   const grouped = skills.reduce<Record<string, Skill[]>>((acc, s) => {
     if (!acc[s.category]) acc[s.category] = [];
@@ -54,6 +31,7 @@ const Skills = () => {
 
   const categories = Object.keys(grouped);
   const [activeTab, setActiveTab] = useState('');
+  const hasSkills = categories.length > 0;
   // Derive active so it auto-corrects when API data replaces fallback categories
   const active = (activeTab && categories.includes(activeTab)) ? activeTab : (categories[0] ?? '');
 
@@ -104,7 +82,7 @@ const Skills = () => {
 
             {/* File tabs */}
             <div className="flex items-end gap-0.5 overflow-x-auto">
-              {categories.map((cat) => {
+              {hasSkills ? categories.map((cat) => {
                 const m = tabMeta[cat] ?? { accent: '#1A56FF', file: `${cat}.ts`, comment: '' };
                 const isActive = cat === active;
                 return (
@@ -127,50 +105,60 @@ const Skills = () => {
                     {m.file}
                   </button>
                 );
-              })}
+              }) : (
+                <span className="px-4 py-2.5 font-mono text-xs text-white/40">
+                  {isFetching ? 'loading.ts' : 'empty.ts'}
+                </span>
+              )}
             </div>
           </div>
 
           {/* Code panel */}
           <div className="bg-[#F8F9FF] p-8 min-h-[260px]">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={active}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-              >
-                {/* Comment line */}
-                <p className="font-mono text-sm text-[#8892A4] mb-6">
-                  {meta.comment}
-                </p>
+            {isFetching && !hasSkills ? (
+              <p className="font-mono text-sm text-[#8892A4]">Loading skills...</p>
+            ) : !hasSkills ? (
+              <p className="font-mono text-sm text-[#8892A4]">No skills added yet.</p>
+            ) : (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={active}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {/* Comment line */}
+                  <p className="font-mono text-sm text-[#8892A4] mb-6">
+                    {meta.comment}
+                  </p>
 
-                {/* Skills grid */}
-                <div className="flex flex-wrap gap-3">
-                  {activeSkills.map((skill, i) => (
-                    <motion.span
-                      key={skill.id}
-                      initial={{ opacity: 0, scale: 0.85 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: i * 0.05, duration: 0.2 }}
-                      whileHover={{ y: -3, transition: { duration: 0.15 } }}
-                      className="inline-flex items-center gap-2 font-mono text-sm font-semibold
-                                 px-4 py-2 rounded-lg border bg-white cursor-default shadow-sm"
-                      style={{ color: meta.accent, borderColor: `${meta.accent}30` }}
-                    >
-                      <span className="text-xs opacity-40">▸</span>
-                      {skill.name}
-                    </motion.span>
-                  ))}
-                </div>
+                  {/* Skills grid */}
+                  <div className="flex flex-wrap gap-3">
+                    {activeSkills.map((skill, i) => (
+                      <motion.span
+                        key={skill.id}
+                        initial={{ opacity: 0, scale: 0.85 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: i * 0.05, duration: 0.2 }}
+                        whileHover={{ y: -3, transition: { duration: 0.15 } }}
+                        className="inline-flex items-center gap-2 font-mono text-sm font-semibold
+                                   px-4 py-2 rounded-lg border bg-white cursor-default shadow-sm"
+                        style={{ color: meta.accent, borderColor: `${meta.accent}30` }}
+                      >
+                        <span className="text-xs opacity-40">▸</span>
+                        {skill.name}
+                      </motion.span>
+                    ))}
+                  </div>
 
-                {/* Footer line */}
-                <p className="font-mono text-xs text-[#8892A4]/50 mt-8">
-                  {activeSkills.length} {active.toLowerCase()} skills
-                </p>
-              </motion.div>
-            </AnimatePresence>
+                  {/* Footer line */}
+                  <p className="font-mono text-xs text-[#8892A4]/50 mt-8">
+                    {activeSkills.length} {active.toLowerCase()} skills
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            )}
           </div>
         </motion.div>
 
