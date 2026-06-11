@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
 import { api } from '../services/api';
 
-const DATA_LOAD_TIMEOUT_MS = 60_000;
+const DATA_LOAD_TIMEOUT_MS = 20_000;
 const SLEEP_GAP_MS = 30_000;
 const WAKE_CHECK_INTERVAL_MS = 15_000;
 

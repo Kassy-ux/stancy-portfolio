@@ -1,5 +1,5 @@
 const BASE_URL = import.meta.env.VITE_API_URL || '/api';
-const REQUEST_TIMEOUT_MS = 60_000;
+const REQUEST_TIMEOUT_MS = 20_000;
 
 const fetchWithTimeout = async (
   input: RequestInfo | URL,
