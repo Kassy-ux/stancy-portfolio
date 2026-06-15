@@ -59,7 +59,7 @@ jobs:
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_FE06652A6E4449B0929A916C342F5F2B }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_147F21435CB6428093A83F5633E501F8 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C09F50585D4D4ED196D58A0F2779BB4E }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_D3F4C3AA8EA24563AFFA28EE2A6B82F3 }}
           allow-no-subscriptions: true
 
       - name: 'Deploy to Azure Web App'
