@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+
 dotenv.config();
 
 import express from 'express';
@@ -16,8 +17,15 @@ import { setupSwagger } from './config/swagger';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const clientUrl = process.env.CLIENT_URL;
 
-app.use(cors({ origin: process.env.CLIENT_URL }));
+app.use(
+  cors(
+    clientUrl
+      ? { origin: clientUrl }
+      : { origin: true },
+  ),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -26,6 +34,15 @@ app.get('/health', (_req, res) => {
     ok: true,
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
+  });
+});
+
+app.get('/', (_req, res) => {
+  res.status(200).json({
+    ok: true,
+    message: 'Portfolio API is running',
+    health: '/health',
+    docs: '/api/docs',
   });
 });
 
