@@ -11,11 +11,13 @@ const Footer = () => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const { data: settings, isFetching } = useQuery<SettingsMap>({
+  const { data: settings } = useQuery<SettingsMap>({
     queryKey: ['settings'],
     queryFn: () => api.settings.get() as Promise<SettingsMap>,
   });
-  const shownSettings = isFetching ? undefined : settings;
+  // Read `data` directly, never gated on a refetch — a background refresh must
+  // keep showing what we already have instead of blanking the footer links.
+  const shownSettings = settings;
 
   return (
     <footer className="bg-[#0A0A0F] text-white">

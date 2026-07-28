@@ -172,12 +172,14 @@ const CommunityCard = ({ item, index }: { item: CommunityDisplay; index: number 
 };
 
 const Community = () => {
-  const { data: communityData, isFetching } = useQuery({
+  const { data: communityData, isPending } = useQuery({
     queryKey: ['community'],
     queryFn: api.community.getAll,
   });
 
-  const rawData = !isFetching && Array.isArray(communityData)
+  // Read `data` directly, never gated on a refetch — a background refresh must
+  // keep showing what we already have instead of blanking the section.
+  const rawData = Array.isArray(communityData)
     ? (communityData as CommunityType[])
     : [];
 
@@ -226,7 +228,7 @@ const Community = () => {
         </motion.p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {isFetching && communities.length === 0 ? (
+          {isPending ? (
             <p className="md:col-span-2 xl:col-span-3 font-body text-[#8892A4]">
               Loading communities...
             </p>

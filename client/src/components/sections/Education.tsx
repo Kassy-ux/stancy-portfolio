@@ -114,12 +114,14 @@ const TimelineEntry = ({ edu, index }: { edu: EducationType; index: number }) =>
 };
 
 const Education = () => {
-  const { data: educationData, isFetching } = useQuery({
+  const { data: educationData, isPending } = useQuery({
     queryKey: ['education'],
     queryFn: api.education.getAll,
   });
 
-  const educations = !isFetching && Array.isArray(educationData)
+  // Read `data` directly, never gated on a refetch — a background refresh must
+  // keep showing what we already have instead of blanking the section.
+  const educations = Array.isArray(educationData)
     ? (educationData as EducationType[])
     : [];
 
@@ -172,7 +174,7 @@ const Education = () => {
                           to-transparent" />
 
           <div className="flex flex-col gap-12 md:gap-16">
-            {isFetching && educations.length === 0 ? (
+            {isPending ? (
               <p className="font-body text-[#8892A4]">Loading education...</p>
             ) : educations.length === 0 ? (
               <p className="font-body text-[#8892A4]">No education added yet.</p>

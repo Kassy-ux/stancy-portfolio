@@ -14,12 +14,14 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { activeSection, scrollToSection } = useActiveSection();
 
-  const { data: settings, isFetching } = useQuery<SettingsMap>({
+  const { data: settings } = useQuery<SettingsMap>({
     queryKey: ['settings'],
     queryFn: () => api.settings.get() as Promise<SettingsMap>,
   });
   const BASE_URL = import.meta.env.VITE_API_URL || '/api';
-  const resumeUrl = !isFetching && settings?.resumeUrl
+  // Read `data` directly, never gated on a refetch — a background refresh must
+  // keep showing what we already have instead of hiding the resume button.
+  const resumeUrl = settings?.resumeUrl
     ? `${BASE_URL}/settings/resume/download`
     : null;
 

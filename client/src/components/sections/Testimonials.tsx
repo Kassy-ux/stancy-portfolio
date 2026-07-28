@@ -98,12 +98,14 @@ const TestimonialCard = ({
 const Testimonials = () => {
   const [current, setCurrent] = useState(0);
 
-  const { data: testimonialsData, isFetching } = useQuery({
+  const { data: testimonialsData, isPending } = useQuery({
     queryKey: ['testimonials'],
     queryFn: api.testimonials.getAll,
   });
 
-  const testimonials = !isFetching && Array.isArray(testimonialsData)
+  // Read `data` directly, never gated on a refetch — a background refresh must
+  // keep showing what we already have instead of blanking the section.
+  const testimonials = Array.isArray(testimonialsData)
     ? (testimonialsData as Testimonial[])
     : [];
   const activeIndex = testimonials.length > 0
@@ -153,7 +155,7 @@ const Testimonials = () => {
           viewport={{ once: true }}
           className="hidden md:grid grid-cols-2 xl:grid-cols-3 gap-6"
         >
-          {isFetching && testimonials.length === 0 ? (
+          {isPending ? (
             <p className="md:col-span-2 xl:col-span-3 font-body text-[#8892A4]">
               Loading testimonials...
             </p>
@@ -170,7 +172,7 @@ const Testimonials = () => {
 
         {/* Mobile Carousel */}
         <div className="md:hidden">
-          {isFetching && testimonials.length === 0 ? (
+          {isPending ? (
             <p className="font-body text-[#8892A4]">Loading testimonials...</p>
           ) : testimonials.length === 0 ? (
             <p className="font-body text-[#8892A4]">No testimonials added yet.</p>

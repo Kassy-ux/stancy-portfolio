@@ -71,12 +71,14 @@ const Hero = () => {
     document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const { data: settings, isFetching } = useQuery({
+  const { data: settings } = useQuery({
     queryKey: ['settings'],
     queryFn: api.settings.get,
   });
 
-  const s = isFetching ? undefined : settings as Record<string, string> | undefined;
+  // Read `data` directly, never gated on a refetch — a background refresh must
+  // keep showing what we already have instead of dropping the photo and links.
+  const s = settings as Record<string, string> | undefined;
   const tagline  = s?.tagline  || 'Code that solves real problems — not just runs. Building scalable web applications from frontend to backend.';
   const photoUrl = s?.heroImageUrl || null;
   const githubUrl = s?.githubUrl;

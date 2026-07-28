@@ -14,12 +14,14 @@ const tabMeta: Record<string, { accent: string; file: string; comment: string }>
 };
 
 const Skills = () => {
-  const { data: skillsData, isFetching } = useQuery({
+  const { data: skillsData, isPending } = useQuery({
     queryKey: ['skills'],
     queryFn: api.skills.getAll,
   });
 
-  const skills = !isFetching && Array.isArray(skillsData)
+  // Read `data` directly, never gated on a refetch — a background refresh must
+  // keep showing what we already have instead of blanking the section.
+  const skills = Array.isArray(skillsData)
     ? (skillsData as Skill[])
     : [];
 
@@ -107,7 +109,7 @@ const Skills = () => {
                 );
               }) : (
                 <span className="px-4 py-2.5 font-mono text-xs text-white/40">
-                  {isFetching ? 'loading.ts' : 'empty.ts'}
+                  {isPending ? 'loading.ts' : 'empty.ts'}
                 </span>
               )}
             </div>
@@ -115,7 +117,7 @@ const Skills = () => {
 
           {/* Code panel */}
           <div className="bg-[#F8F9FF] p-8 min-h-[260px]">
-            {isFetching && !hasSkills ? (
+            {isPending ? (
               <p className="font-mono text-sm text-[#8892A4]">Loading skills...</p>
             ) : !hasSkills ? (
               <p className="font-mono text-sm text-[#8892A4]">No skills added yet.</p>

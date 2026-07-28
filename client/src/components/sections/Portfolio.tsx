@@ -161,18 +161,20 @@ const SmallCard = ({ project, index }: { project: Project; index: number }) => (
 );
 
 const Portfolio = () => {
-  const { data: projectsData, isFetching } = useQuery({
+  const { data: projectsData, isPending } = useQuery({
     queryKey: ['projects'],
     queryFn: api.projects.getAll,
   });
-  const { data: settingsData, isFetching: isFetchingSettings } = useQuery({
+  const { data: settingsData } = useQuery({
     queryKey: ['settings'],
     queryFn: api.settings.get,
   });
 
+  // Read `data` directly, never gated on a refetch — a background refresh must
+  // keep showing what we already have instead of blanking the section.
   const settings = settingsData as Record<string, string> | undefined;
-  const githubUrl = isFetchingSettings ? undefined : settings?.githubUrl;
-  const projects = !isFetching && Array.isArray(projectsData)
+  const githubUrl = settings?.githubUrl;
+  const projects = Array.isArray(projectsData)
     ? (projectsData as Project[])
     : [];
   const featured = projects.filter((p) => p.featured);
@@ -232,7 +234,7 @@ const Portfolio = () => {
           viewport={{ once: true }}
           className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"
         >
-          {isFetching && projects.length === 0 ? (
+          {isPending ? (
             <p className="md:col-span-2 xl:col-span-3 font-body text-[#8892A4]">
               Loading projects...
             </p>

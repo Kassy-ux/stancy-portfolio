@@ -18,12 +18,14 @@ const floatingSymbols = [
 ];
 
 const Certification = () => {
-  const { data: certificationData, isFetching } = useQuery({
+  const { data: certificationData, isPending } = useQuery({
     queryKey: ['certification'],
     queryFn: api.certification.getAll,
   });
 
-  const certifications = !isFetching && Array.isArray(certificationData)
+  // Read `data` directly, never gated on a refetch — a background refresh must
+  // keep showing what we already have instead of blanking the section.
+  const certifications = Array.isArray(certificationData)
     ? (certificationData as TCertification[])
     : [];
 
@@ -81,7 +83,7 @@ const Certification = () => {
           viewport={{ once: true }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {isFetching && certifications.length === 0 ? (
+          {isPending ? (
             <p className="md:col-span-2 lg:col-span-3 font-body text-[#8892A4]">
               Loading certifications...
             </p>

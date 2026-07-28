@@ -24,11 +24,13 @@ type ContactForm = z.infer<typeof contactSchema>;
 const Contact = () => {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
-  const { data: settingsData, isFetching } = useQuery({
+  const { data: settingsData } = useQuery({
     queryKey: ['settings'],
     queryFn: api.settings.get,
   });
-  const s = isFetching ? undefined : settingsData as Record<string, string> | undefined;
+  // Read `data` directly, never gated on a refetch — a background refresh must
+  // keep showing what we already have instead of dropping the contact details.
+  const s = settingsData as Record<string, string> | undefined;
 
   const email = s?.email || '';
   const phone = s?.phone || '';

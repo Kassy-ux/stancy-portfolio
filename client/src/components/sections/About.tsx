@@ -39,11 +39,13 @@ const whatIDo = [
 ];
 
 const About = () => {
-  const { data: settingsData, isFetching } = useQuery({
+  const { data: settingsData } = useQuery({
     queryKey: ['settings'],
     queryFn: api.settings.get,
   });
-  const s = isFetching ? undefined : settingsData as Record<string, string> | undefined;
+  // Read `data` directly, never gated on a refetch — a background refresh must
+  // keep showing what we already have instead of blanking the bio and photo.
+  const s = settingsData as Record<string, string> | undefined;
 
   const photoUrl = s?.heroImageUrl || null;
   const aboutBio = s?.aboutBio || null;
