@@ -4,6 +4,10 @@ import { api } from '../services/api';
 import { useActiveSection, sections } from './useActiveSection';
 import { setFaviconHref, buildCircularFavicon } from '../lib/favicon';
 
+// Keep in sync with the <title> in index.html, which is what shows before the
+// app hydrates.
+const SITE_NAME = 'Stancy Ngereso';
+
 export const useDynamicHead = () => {
   const { activeSection } = useActiveSection();
 
@@ -18,10 +22,10 @@ export const useDynamicHead = () => {
   // Update <title> on every section change
   useEffect(() => {
     const section = sections.find(sec => sec.id === activeSection);
-    const label = section?.label ?? 'Home';
+    const label = section?.label ?? 'Portfolio';
     document.title = activeSection === 'hero'
-      ? 'Stancy Ngereso — Portfolio'
-      : `${label} | Stancy Ngereso`;
+      ? `${SITE_NAME} — Portfolio`
+      : `${label} | ${SITE_NAME}`;
   }, [activeSection]);
 
   // Update favicon whenever heroImageUrl changes

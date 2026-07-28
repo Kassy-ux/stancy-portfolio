@@ -1,8 +1,9 @@
 import db from '../db/index';
 import { eq } from 'drizzle-orm';
-import { usersTable, TUserInsert, TUserSelect } from '../db/schema';
+import { usersTable } from '../db/schema';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { env } from '../config/env';
 
 export const registerUserService = async (email: string, password: string): Promise<string> => {
     const existing = await db.query.usersTable.findFirst({
@@ -26,7 +27,7 @@ export const loginUserService = async (email: string, password: string): Promise
 
     const token = jwt.sign(
         { id: user.id },
-        process.env.JWT_SECRET as string,
+        env.jwtSecret,
         { expiresIn: '7d' }
     );
     return token;

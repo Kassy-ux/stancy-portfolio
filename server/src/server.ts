@@ -1,8 +1,8 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import { env } from './config/env';
 
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 
 import { UserRouter } from './User/user.routes';
 import { ProjectsRouter } from './Projects/projects.routes';
@@ -13,13 +13,20 @@ import { ContactRouter } from './Contact/contact.routes';
 import { EducationRouter } from './Education/education.routes';
 import { CommunityRouter } from './Community/community.routes';
 import { setupSwagger } from './config/swagger';
+import { errorHandler, notFoundHandler } from './Middleware/error';
+import { apiLimiter } from './Middleware/rateLimit';
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-app.use(cors({ origin: process.env.CLIENT_URL }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Trust the first proxy hop so express-rate-limit sees real client IPs
+// behind Render/Vercel/Fly rather than rate-limiting the proxy itself.
+app.set('trust proxy', 1);
+
+// crossOriginResourcePolicy is relaxed so Swagger UI assets load correctly.
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+app.use(cors({ origin: env.clientUrl }));
+app.use(express.json({ limit: '100kb' }));
+app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 
 app.get('/health', (_req, res) => {
   res.status(200).json({
@@ -32,6 +39,13 @@ app.get('/health', (_req, res) => {
 // Swagger docs — available at /api/docs
 setupSwagger(app);
 
+app.get('/api/health', (_req, res) => {
+  res.json({ status: 'Server is running' });
+});
+
+// Applied after /api/docs and /api/health so docs and uptime checks stay free.
+app.use('/api', apiLimiter);
+
 app.use('/api', UserRouter);
 app.use('/api/projects', ProjectsRouter);
 app.use('/api/skills', SkillsRouter);
@@ -41,7 +55,11 @@ app.use('/api/contact', ContactRouter);
 app.use('/api/education', EducationRouter);
 app.use('/api/communities', CommunityRouter);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`API docs: http://localhost:${PORT}/api/docs`);
+// Must be registered last, after every route.
+app.use(notFoundHandler);
+app.use(errorHandler);
+
+app.listen(env.port, () => {
+  console.log(`Server running on port ${env.port}`);
+  console.log(`API docs: http://localhost:${env.port}/api/docs`);
 });

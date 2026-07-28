@@ -7,6 +7,7 @@ import {
     deleteContactMessage
 } from './contact.controller';
 import { authenticate } from '../Middleware/auth';
+import { contactLimiter } from '../Middleware/rateLimit';
 
 export const ContactRouter = Router();
 
@@ -24,7 +25,7 @@ export const ContactRouter = Router();
  *     security:
  *       - bearerAuth: []
  */
-ContactRouter.post('/', createContactMessage);
+ContactRouter.post('/', contactLimiter, createContactMessage);
 ContactRouter.get('/', authenticate, getAllContactMessages);
 
 /**

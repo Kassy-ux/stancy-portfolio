@@ -7,6 +7,11 @@ server/node_modules/
 client/dist/
 server/dist/
 
+# Compiled vite config — vite resolves .js before .ts, so a stale one shadows
+# vite.config.ts and silently ignores edits
+client/vite.config.js
+client/vite.config.d.ts
+
 # Environment files — never commit secrets
 .env
 .env.local

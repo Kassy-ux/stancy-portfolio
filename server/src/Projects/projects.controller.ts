@@ -6,7 +6,8 @@ import {
     createProjectService,
     updateProjectService,
     deleteProjectService,
-    toggleFeaturedProjectService
+    toggleFeaturedProjectService,
+    setProjectImageService
 } from './projects.services';
 
 // GET /api/projects
@@ -141,7 +142,8 @@ export const uploadProjectImage = async (req: Request, res: Response) => {
             res.status(404).json({ error: 'Project not found' });
             return;
         }
-        const result = await updateProjectService(id, { ...project, imageUrl });
+        // Only touch imageUrl — spreading the row would rewrite id and createdAt.
+        const result = await setProjectImageService(id, imageUrl);
         res.status(200).json({ message: result, imageUrl });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Internal Server Error';

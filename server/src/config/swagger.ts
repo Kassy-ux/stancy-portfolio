@@ -90,30 +90,30 @@ Get a token by calling \`POST /api/auth/login\`.
                         order: { type: 'integer' },
                     },
                 },
-                // Experience
-                Experience: {
+                // Certifications
+                Certification: {
                     type: 'object',
                     properties: {
-                        experienceId: { type: 'integer' },
-                        company: { type: 'string' },
-                        role: { type: 'string' },
-                        location: { type: 'string', nullable: true },
-                        startDate: { type: 'string' },
-                        endDate: { type: 'string', nullable: true, description: 'null = current job' },
-                        bullets: { type: 'array', items: { type: 'string' }, nullable: true },
+                        id: { type: 'integer' },
+                        issuer: { type: 'string' },
+                        certificateName: { type: 'string' },
+                        description: { type: 'string', nullable: true },
+                        issueDate: { type: 'string' },
+                        expiryDate: { type: 'string', nullable: true, description: 'null = no expiry' },
+                        certificateUrl: { type: 'string', nullable: true },
                         order: { type: 'integer' },
                     },
                 },
-                ExperienceBody: {
+                CertificationBody: {
                     type: 'object',
-                    required: ['company', 'role', 'startDate'],
+                    required: ['issuer', 'certificateName', 'issueDate'],
                     properties: {
-                        company: { type: 'string' },
-                        role: { type: 'string' },
-                        location: { type: 'string' },
-                        startDate: { type: 'string' },
-                        endDate: { type: 'string' },
-                        bullets: { type: 'array', items: { type: 'string' } },
+                        issuer: { type: 'string' },
+                        certificateName: { type: 'string' },
+                        description: { type: 'string' },
+                        issueDate: { type: 'string' },
+                        expiryDate: { type: 'string' },
+                        certificateUrl: { type: 'string' },
                         order: { type: 'integer' },
                     },
                 },
@@ -234,16 +234,19 @@ Get a token by calling \`POST /api/auth/login\`.
             },
         },
     },
+    // Under tsx these are .ts sources; after `tsc` they are the emitted .js in
+    // dist/ (which keep the JSDoc comments). Match whichever we're running as,
+    // otherwise the built server serves an empty spec.
     apis: [
-        path.join(__dirname, '../User/user.routes.ts'),
-        path.join(__dirname, '../Projects/projects.routes.ts'),
-        path.join(__dirname, '../Skills/skills.routes.ts'),
-        path.join(__dirname, '../Experience/experience.routes.ts'),
-        path.join(__dirname, '../Testimonials/Testimonials.routes.ts'),
-        path.join(__dirname, '../Contact/contact.routes.ts'),
-        path.join(__dirname, '../Education/education.routes.ts'),
-        path.join(__dirname, '../Community/community.routes.ts'),
-    ],
+        'User/user.routes',
+        'Projects/projects.routes',
+        'Skills/skills.routes',
+        'Certification/certification.routes',
+        'Testimonials/Testimonials.routes',
+        'Contact/contact.routes',
+        'Education/education.routes',
+        'Community/community.routes',
+    ].map(route => path.join(__dirname, '..', `${route}${path.extname(__filename)}`)),
 };
 
 const swaggerSpec = swaggerJsdoc(options);

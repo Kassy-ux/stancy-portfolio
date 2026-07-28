@@ -31,6 +31,11 @@ export const updateProjectService = async (id: number, data: TProjectInsert): Pr
     return 'Project updated successfully';
 };
 
+export const setProjectImageService = async (id: number, imageUrl: string): Promise<string> => {
+    await db.update(projectsTable).set({ imageUrl }).where(eq(projectsTable.id, id));
+    return 'Project image updated successfully';
+};
+
 export const deleteProjectService = async (id: number): Promise<string> => {
     await db.delete(projectsTable).where(eq(projectsTable.id, id));
     return 'Project deleted successfully';

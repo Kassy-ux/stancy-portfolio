@@ -2,14 +2,11 @@ import { Request, Response } from "express";
 import { getAllCCommunitiesService, getCommunityByIdService, createCommunityService, updateCommunityService, deleteCommunityService } from "./community.services";
 
 // GET /api/community
-export const getAllCommunities = async (req: Request, res: Response) => {
+export const getAllCommunities = async (_req: Request, res: Response) => {
     try {
-        const existingCommunities = await getAllCCommunitiesService();
-        if (!existingCommunities || existingCommunities.length === 0) {
-            res.status(404).json({ message: "No communities found" });
-            return;
-        }
-        res.status(200).json(existingCommunities);
+        // An empty collection is not an error — return [] like the other
+        // list endpoints so the public section renders normally.
+        res.status(200).json(await getAllCCommunitiesService());
     } catch (error) {
         console.error("Error fetching communities:", error);
         const message = error instanceof Error ? error.message : "Internal Server Error";

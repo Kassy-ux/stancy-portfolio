@@ -16,24 +16,47 @@ export const useActiveSection = () => {
   const [activeSection, setActiveSection] = useState('hero');
 
   useEffect(() => {
-    const observers: IntersectionObserver[] = [];
+    let observers: IntersectionObserver[] = [];
 
-    sections.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (!el) return;
+    // The page renders a loader before the sections exist, so a one-shot attach
+    // on mount finds nothing. Watch the DOM and (re)attach as sections appear.
+    const attach = () => {
+      const els = sections
+        .map(({ id }) => document.getElementById(id))
+        .filter((el): el is HTMLElement => el !== null);
 
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) setActiveSection(id);
-        },
-        { threshold: 0.4 }
-      );
+      if (els.length === observers.length) return els.length === sections.length;
 
-      observer.observe(el);
-      observers.push(observer);
-    });
+      observers.forEach(o => o.disconnect());
+      observers = els.map(el => {
+        const observer = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) setActiveSection(el.id);
+          },
+          { threshold: 0.4 }
+        );
+        observer.observe(el);
+        return observer;
+      });
 
-    return () => observers.forEach(o => o.disconnect());
+      return els.length === sections.length;
+    };
+
+    let mutationObserver: MutationObserver | null = null;
+    if (!attach()) {
+      mutationObserver = new MutationObserver(() => {
+        if (attach()) {
+          mutationObserver?.disconnect();
+          mutationObserver = null;
+        }
+      });
+      mutationObserver.observe(document.body, { childList: true, subtree: true });
+    }
+
+    return () => {
+      mutationObserver?.disconnect();
+      observers.forEach(o => o.disconnect());
+    };
   }, []);
 
   const scrollToSection = (id: string) => {

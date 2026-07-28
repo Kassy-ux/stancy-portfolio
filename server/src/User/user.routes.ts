@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { register, login, uploadHeroImage, getHeroImageUrl, setResumeUrl, getResumeUrl, setTagline, getTagline, getAllSettings, updateSettings, uploadResumePdf, downloadResume } from './user.controller';
 import { upload, uploadToCloudinary, uploadPdf } from '../Middleware/upload';
 import { authenticate } from '../Middleware/auth';
+import { loginLimiter } from '../Middleware/rateLimit';
 
 export const UserRouter = Router();
 
@@ -31,7 +32,7 @@ export const UserRouter = Router();
  *       401:
  *         description: Invalid credentials
  */
-UserRouter.post('/auth/login', login);
+UserRouter.post('/auth/login', loginLimiter, login);
 
 /**
  * @openapi

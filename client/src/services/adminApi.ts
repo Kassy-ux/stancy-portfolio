@@ -150,6 +150,10 @@ export interface SettingsMap {
 export const settingsApi = {
   getAll:        ()               => aGet('/settings')                                       as Promise<SettingsMap>,
   update:        (d: SettingsMap) => aPut('/settings', d),
-  uploadHero:    (f: File)        => aUpload('/auth/upload/hero', 'heroImage', f)            as Promise<{ heroImageUrl: string }>,
-  uploadResume:  (f: File)        => aUpload('/settings/resume/upload', 'resume', f)         as Promise<{ resumeUrl: string }>,
+  // The server returns { message, imageUrl } / { message, url } — normalise to
+  // the field names the settings form uses.
+  uploadHero:    (f: File)        => (aUpload('/auth/upload/hero', 'heroImage', f) as Promise<{ imageUrl: string }>)
+                                       .then(r => ({ heroImageUrl: r.imageUrl })),
+  uploadResume:  (f: File)        => (aUpload('/settings/resume/upload', 'resume', f) as Promise<{ url: string }>)
+                                       .then(r => ({ resumeUrl: r.url })),
 };

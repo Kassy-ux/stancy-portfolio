@@ -161,12 +161,28 @@ export const getTagline = async (_req: Request, res: Response) => {
     }
 };
 
+// Keys safe to expose on the public site. Anything stored under another key
+// stays server-side, so adding a private setting later can't leak by default.
+const PUBLIC_SETTING_KEYS = new Set([
+    'tagline',
+    'heroImageUrl',
+    'heroFocalPoint',
+    'resumeUrl',
+    'githubUrl',
+    'linkedinUrl',
+    'twitterUrl',
+    'email',
+    'phone',
+    'location',
+    'aboutBio',
+]);
+
 // GET /api/settings — return all settings as a single object (public)
 export const getAllSettings = async (_req: Request, res: Response) => {
     try {
         const rows = await db.query.siteSettingsTable.findMany();
         const settings = rows.reduce((acc, row) => {
-            acc[row.key] = row.value;
+            if (PUBLIC_SETTING_KEYS.has(row.key)) acc[row.key] = row.value;
             return acc;
         }, {} as Record<string, string>);
         res.status(200).json(settings);

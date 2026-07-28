@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Plus, Pencil, Trash2, X, Loader2, ImageIcon, ZoomIn, UploadCloud, Link2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { educationApi } from '../../services/adminApi';

@@ -68,8 +68,9 @@ CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 
 # JWT
-# Use a long, random string — e.g. openssl rand -base64 48
-JWT_SECRET=replace_with_a_long_random_secret
+# Must be at least 32 characters — the server refuses to start otherwise.
+# Generate one with: openssl rand -base64 48
+JWT_SECRET=replace_with_a_long_random_secret_at_least_32_chars
 
 # CORS — the URL of your frontend dev server
 CLIENT_URL=http://localhost:5173
@@ -196,8 +197,8 @@ For deployment, serve the `client/dist/` folder from a static host (Vercel, Netl
 | `CLOUDINARY_CLOUD_NAME` | Yes | Cloudinary account cloud name. |
 | `CLOUDINARY_API_KEY` | Yes | Cloudinary API key. |
 | `CLOUDINARY_API_SECRET` | Yes | Cloudinary API secret. |
-| `JWT_SECRET` | Yes | Secret used to sign and verify JWT tokens. |
-| `CLIENT_URL` | Yes | Frontend origin for CORS. Must match the exact URL the browser uses. |
+| `JWT_SECRET` | Yes | Secret used to sign and verify JWT tokens. Minimum 32 characters — startup fails if shorter. |
+| `CLIENT_URL` | Yes | Frontend origin for CORS. Must match the exact URL the browser uses. Startup fails if unset, so CORS can never fall back to `*`. |
 
 ### client/.env
 
