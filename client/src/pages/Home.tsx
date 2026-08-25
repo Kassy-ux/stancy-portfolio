@@ -10,36 +10,26 @@ import Education from '../components/sections/Education';
 import Community from '../components/sections/Community';
 import Testimonials from '../components/sections/Testimonials';
 import Contact from '../components/sections/Contact';
-import PageLoader from '../components/ui/PageLoader';
 import { useDynamicHead } from '../hooks/useDynamicHead';
-import { usePortfolioDataGate } from '../hooks/usePortfolioDataGate';
 
 const Home = () => {
   useDynamicHead();
-  const { showInitialLoader, showWakeLoader } = usePortfolioDataGate();
-
-  if (showInitialLoader) {
-    return <PageLoader />;
-  }
 
   return (
-    <>
-      <main className="relative animate-fadeIn">
-        <Navbar />
-        <DotNavigation />
-        <Hero />
-        <About />
-        <Certification />
-        <Skills />
-        <Portfolio />
-        <Education />
-        <Community />
-        <Testimonials />
-        <Contact />
-        <Footer />
-      </main>
-      {showWakeLoader && <PageLoader />}
-    </>
+    <main className="relative animate-fadeIn">
+      <Navbar />
+      <DotNavigation />
+      <Hero />
+      <About />
+      <Certification />
+      <Skills />
+      <Portfolio />
+      <Education />
+      <Community />
+      <Testimonials />
+      <Contact />
+      <Footer />
+    </main>
   );
 };
 

@@ -3,6 +3,7 @@ import { Code2, Globe, Server, Layers } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fadeInLeft, fadeInRight, fadeInUp, staggerContainer } from '../../lib/animations';
 import { api } from '../../services/api';
+import { getOptimizedImageUrl } from '../../lib/cloudinary';
 
 const stats = [
   { value: '1+',  label: 'Years Experience',  bg: 'bg-[#1A56FF]/10', text: 'text-[#1A56FF]' },
@@ -86,7 +87,15 @@ const About = () => {
                               flex items-center justify-center overflow-hidden
                               border border-gray-100">
                 {photoUrl ? (
-                  <img src={photoUrl} alt="About" className="w-full h-full object-cover" />
+                  <img
+                    src={getOptimizedImageUrl(photoUrl, { width: 720, height: 720, fit: 'fill' })}
+                    alt="About"
+                    width={720}
+                    height={720}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <Code2 size={48} className="text-[#8892A4]" strokeWidth={1.4} />
                 )}

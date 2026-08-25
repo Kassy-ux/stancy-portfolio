@@ -1,5 +1,6 @@
 import { getToken, clearToken } from '../lib/auth';
-import type { Project, Skill, Certification, Education, Community, Testimonial } from '../types';
+import type { Project, Skill, Certification, Education, Community, SettingsMap, Testimonial } from '../types';
+export type { SettingsMap } from '../types';
 
 const BASE = import.meta.env.VITE_API_URL || '/api';
 
@@ -132,20 +133,6 @@ export const contactApi = {
 };
 
 // ── Settings ──────────────────────────────────────────────────────────────────
-
-export interface SettingsMap {
-  tagline?: string;
-  heroImageUrl?: string;
-  heroFocalPoint?: string;
-  resumeUrl?: string;
-  githubUrl?: string;
-  linkedinUrl?: string;
-  twitterUrl?: string;
-  email?: string;
-  phone?: string;
-  location?: string;
-  aboutBio?: string;
-}
 
 export const settingsApi = {
   getAll:        ()               => aGet('/settings')                                       as Promise<SettingsMap>,

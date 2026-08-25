@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { GraduationCap, BookOpen, Calendar } from 'lucide-react';
 import { fadeInLeft, fadeInUp } from '../../lib/animations';
 import { api } from '../../services/api';
+import { getOptimizedImageUrl } from '../../lib/cloudinary';
 import { Education as EducationType } from '../../types';
 
 const entryMeta = [
@@ -37,7 +38,15 @@ const TimelineEntry = ({ edu, index }: { edu: EducationType; index: number }) =>
         <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
              style={{ backgroundColor: meta.bg }}>
           {edu.logoUrl
-            ? <img src={edu.logoUrl} alt={edu.institution} className="w-full h-full object-contain p-1.5" />
+            ? <img
+                src={getOptimizedImageUrl(edu.logoUrl, { width: 96, height: 96 })}
+                alt={edu.institution}
+                width={48}
+                height={48}
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-contain p-1.5"
+              />
             : <Icon size={22} style={{ color: meta.accent }} />
           }
         </div>

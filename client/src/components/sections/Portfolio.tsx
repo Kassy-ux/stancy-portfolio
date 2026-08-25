@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { Github, ExternalLink, Star, Code2 } from 'lucide-react';
 import { fadeInLeft, fadeInUp, staggerContainer } from '../../lib/animations';
+import { getOptimizedImageUrl } from '../../lib/cloudinary';
 import { api } from '../../services/api';
 import { Project } from '../../types';
 
@@ -12,12 +13,24 @@ const placeholderGradients = [
   { from: '#B8960C', to: '#1A56FF' },
 ];
 
-const ProjectImage = ({ project, index }: { project: Project; index: number }) => {
+const ProjectImage = ({
+  project,
+  index,
+  dimensions,
+}: {
+  project: Project;
+  index: number;
+  dimensions: { width: number; height: number };
+}) => {
   const g = placeholderGradients[index % placeholderGradients.length];
   return project.imageUrl ? (
     <img
-      src={project.imageUrl}
+      src={getOptimizedImageUrl(project.imageUrl, { ...dimensions, fit: 'fill' })}
       alt={project.title}
+      width={dimensions.width}
+      height={dimensions.height}
+      loading="lazy"
+      decoding="async"
       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
     />
   ) : (
@@ -36,6 +49,18 @@ const ProjectImage = ({ project, index }: { project: Project; index: number }) =
     </div>
   );
 };
+
+const ProjectCardSkeleton = ({ featured = false }: { featured?: boolean }) => (
+  <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white animate-pulse">
+    <div className={`bg-slate-200 ${featured ? 'h-[260px]' : 'h-[160px]'}`} />
+    <div className="space-y-3 p-6">
+      <div className="h-5 w-2/3 rounded bg-slate-200" />
+      <div className="h-3 w-full rounded bg-slate-100" />
+      <div className="h-3 w-5/6 rounded bg-slate-100" />
+      <div className="h-7 w-1/2 rounded bg-slate-100" />
+    </div>
+  </div>
+);
 
 const Links = ({ project }: { project: Project }) => (
   <div className="flex gap-2">
@@ -83,7 +108,7 @@ const FeaturedCard = ({ project, index }: { project: Project; index: number }) =
                transition-all duration-300 flex flex-col"
   >
     <div className="relative overflow-hidden" style={{ height: '260px' }}>
-      <ProjectImage project={project} index={index} />
+      <ProjectImage project={project} index={index} dimensions={{ width: 960, height: 520 }} />
       {project.featured && (
         <div className="absolute top-4 left-4 flex items-center gap-1
                         bg-[#FFD600] text-[#0A0A0F] font-mono text-[10px]
@@ -128,7 +153,7 @@ const SmallCard = ({ project, index }: { project: Project; index: number }) => (
                transition-all duration-300 flex flex-col"
   >
     <div className="relative overflow-hidden" style={{ height: '160px' }}>
-      <ProjectImage project={project} index={index} />
+      <ProjectImage project={project} index={index} dimensions={{ width: 640, height: 320 }} />
       <div className="absolute top-3 right-3">
         <Links project={project} />
       </div>
@@ -161,7 +186,7 @@ const SmallCard = ({ project, index }: { project: Project; index: number }) => (
 );
 
 const Portfolio = () => {
-  const { data: projectsData, isPending } = useQuery({
+  const { data: projectsData, isPending, isError, refetch } = useQuery({
     queryKey: ['projects'],
     queryFn: api.projects.getAll,
   });
@@ -234,10 +259,25 @@ const Portfolio = () => {
           viewport={{ once: true }}
           className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"
         >
-          {isPending ? (
-            <p className="md:col-span-2 xl:col-span-3 font-body text-[#8892A4]">
-              Loading projects...
-            </p>
+          {isError ? (
+            <div className="md:col-span-2 xl:col-span-3 flex flex-col items-start gap-3 rounded-2xl border border-red-100 bg-red-50/70 p-6">
+              <p className="font-body text-sm text-red-700">
+                Projects could not load. The server may still be waking up.
+              </p>
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="rounded-lg bg-[#1A56FF] px-4 py-2 font-body text-sm font-semibold text-white transition-colors hover:bg-[#0D2DB4]"
+              >
+                Try again
+              </button>
+            </div>
+          ) : isPending ? (
+            <>
+              <div className="md:col-span-2"><ProjectCardSkeleton featured /></div>
+              <ProjectCardSkeleton />
+              <ProjectCardSkeleton />
+            </>
           ) : projects.length === 0 ? (
             <p className="md:col-span-2 xl:col-span-3 font-body text-[#8892A4]">
               No projects added yet.

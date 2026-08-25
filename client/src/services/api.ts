@@ -1,5 +1,7 @@
 const BASE_URL = import.meta.env.VITE_API_URL || '/api';
-const REQUEST_TIMEOUT_MS = 20_000;
+// Render's free instances can take longer than a normal API request to wake.
+// Keep the request alive while the UI shows a non-blocking skeleton.
+const REQUEST_TIMEOUT_MS = 45_000;
 
 const fetchWithTimeout = async (
   input: RequestInfo | URL,
@@ -32,12 +34,21 @@ const post = async <T>(endpoint: string, body: unknown): Promise<T> => {
 };
 
 export const api = {
-  projects:      { getAll: () => get('/projects') },
-  skills:        { getAll: ()  => get('/skills') },
-  certification: { getAll: ()  => get('/certification') },
-  education:     { getAll: ()  => get('/education') },
-  testimonials:  { getAll: ()  => get('/testimonials') },
-  community:     { getAll: ()  => get('/communities') },
-  settings:      { get: ()     => get('/settings') },
+  projects:      { getAll: () => get<Project[]>('/projects') },
+  skills:        { getAll: ()  => get<Skill[]>('/skills') },
+  certification: { getAll: ()  => get<Certification[]>('/certification') },
+  education:     { getAll: ()  => get<Education[]>('/education') },
+  testimonials:  { getAll: ()  => get<Testimonial[]>('/testimonials') },
+  community:     { getAll: ()  => get<Community[]>('/communities') },
+  settings:      { get: ()     => get<SettingsMap>('/settings') },
   contact:       { send: (body: unknown) => post('/contact', body) },
 };
+import type {
+  Certification,
+  Community,
+  Education,
+  Project,
+  SettingsMap,
+  Skill,
+  Testimonial,
+} from '../types';

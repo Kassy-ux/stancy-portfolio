@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Quote, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { fadeInLeft, fadeInUp, staggerContainer } from '../../lib/animations';
 import { api } from '../../services/api';
+import { getOptimizedImageUrl } from '../../lib/cloudinary';
 import { Testimonial } from '../../types';
 
 // ── Star Rating ──
@@ -31,7 +32,15 @@ const Avatar = ({ name, avatarUrl }: { name: string; avatarUrl: string | null })
   return (
     <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
       {avatarUrl ? (
-        <img src={avatarUrl} alt={name} className="w-full h-full object-cover" />
+        <img
+          src={getOptimizedImageUrl(avatarUrl, { width: 96, height: 96, fit: 'fill' })}
+          alt={name}
+          width={48}
+          height={48}
+          loading="lazy"
+          decoding="async"
+          className="w-full h-full object-cover"
+        />
       ) : (
         <div className="w-full h-full bg-gradient-to-br from-[#1A56FF] to-[#0D2DB4]
                         flex items-center justify-center">

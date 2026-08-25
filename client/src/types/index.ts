@@ -60,3 +60,17 @@ export interface Community {
   bioUrl: string | null;
   order: number;
 }
+
+export interface SettingsMap {
+  tagline?: string;
+  heroImageUrl?: string;
+  heroFocalPoint?: string;
+  resumeUrl?: string;
+  githubUrl?: string;
+  linkedinUrl?: string;
+  twitterUrl?: string;
+  email?: string;
+  phone?: string;
+  location?: string;
+  aboutBio?: string;
+}

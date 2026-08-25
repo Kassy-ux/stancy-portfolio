@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { Github, Linkedin, Mail, ArrowDown, Briefcase, Code2, MapPin } from 'lucide-react';
 import { api } from '../../services/api';
+import { getOptimizedImageUrl } from '../../lib/cloudinary';
 
 const HeroBackground = lazy(() => import('../three/HeroBackground'));
 
@@ -261,8 +262,12 @@ const Hero = () => {
                 {/* Photo */}
                 {photoUrl ? (
                   <img
-                    src={photoUrl}
+                    src={getOptimizedImageUrl(photoUrl, { width: 900, height: 1000 })}
                     alt="Stancy Ngereso"
+                    width={900}
+                    height={1000}
+                    decoding="async"
+                    fetchPriority="high"
                     className="w-auto h-[360px] max-w-[78vw] object-contain md:h-[500px] md:max-w-none"
                   />
                 ) : (

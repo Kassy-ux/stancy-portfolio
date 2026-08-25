@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ExternalLink, Terminal } from 'lucide-react';
 import { fadeInLeft, fadeInUp } from '../../lib/animations';
 import { api } from '../../services/api';
+import { getOptimizedImageUrl } from '../../lib/cloudinary';
 import { Community as CommunityType } from '../../types';
 
 // Extended type to carry local display metadata
@@ -89,8 +90,12 @@ const CommunityCard = ({ item, index }: { item: CommunityDisplay; index: number 
           >
             {item.logoUrl ? (
               <img
-                src={item.logoUrl}
+                src={getOptimizedImageUrl(item.logoUrl, { width: 96, height: 96 })}
                 alt={`${item.name} logo`}
+                width={48}
+                height={48}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-contain"
               />
             ) : (
